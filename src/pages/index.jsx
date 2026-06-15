@@ -5,8 +5,8 @@ import { Background, Text, Card } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 
-// 纯组件，无客户端唯一代码，适合 SSR
-function CyrxdzjBlogIndex(props) {
+function IndexPage(props) {
+    document.title="cyrxdzj的博客";
     const [notificationAPI, contextHolder] = notification.useNotification();
     console.log(props.index_yaml);
     return (
@@ -37,4 +37,4 @@ function CyrxdzjBlogIndex(props) {
     );
 }
 
-export default CyrxdzjBlogIndex;
+export default IndexPage;
