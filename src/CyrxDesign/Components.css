@@ -1,0 +1,41 @@
+.Background
+{
+    position: fixed;
+    padding: 30px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    overflow-y: scroll;
+    overflow-x:auto;
+    /*display: flex;
+    flex-direction: column;*/
+}
+.Background.BackgroundNoTopPadding
+{
+    padding-top: 0px;
+}
+.Card
+{
+    padding: 30px;
+    border-radius: 30px;
+    transition: backdrop-filter 0.5s ease-in-out, background 0.2s ease-in-out;
+}
+.Card.CardTitle
+{
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.Card:hover
+{
+    backdrop-filter: blur(8px);
+    transition: backdrop-filter 0.5s ease-in-out;
+}
+.Text
+{
+    /*color: rgb(0,0,0);*/
+    font-family: "LXGW Wenkai";
+    white-space:pre-wrap;
+}
