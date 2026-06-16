@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { theme,Flex, Row, Col, Affix } from "antd";
 import { forwardRef,useState,useEffect } from "react";
 import "./Components.css"
@@ -39,6 +39,10 @@ export const Background = forwardRef((props, ref) => {
         background_img_render_height=props.background_img_size.height*zoom;
         background_img_left=(windowSize.width -background_img_render_width )/2;
         background_img_top =(windowSize.height-background_img_render_height)/2;
+    }
+    if(!ref)
+    {
+        ref=useRef();
     }
     return (
         <>

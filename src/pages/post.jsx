@@ -42,6 +42,7 @@ function AntTable({ node }) {
         title: <Text bold>{extractText(th)}</Text>,
         dataIndex: `col${colIndex}`,
         key: `col${colIndex}`,
+        align: th.properties?.align || 'left',
         render: (text) => <Text>{text}</Text>,
     })) || [];
 
