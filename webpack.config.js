@@ -151,6 +151,7 @@ module.exports = [
             port: 3000,
             hot: true,
             open: true,
+            watchFiles: ['src/data/**/*'],
             historyApiFallback: {
                 rewrites: posts.map(p => ({
                     from: new RegExp(`^/post/${p.id}$`),

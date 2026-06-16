@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme,Flex, Row, Col } from "antd";
+import { theme,Flex, Row, Col, Affix } from "antd";
 import { forwardRef,useState,useEffect } from "react";
 import "./Components.css"
 
@@ -25,10 +25,11 @@ const useWindowSize = () => {
 
     return windowSize;
 }
-export function Background(props) {
+export const Background = forwardRef((props, ref) => {
     let background_img_left=0,background_img_top=0;
     let background_img_render_width=0,background_img_render_height=0;
     const windowSize=useWindowSize();
+    const [titleAffixed,setTitleAffixed]=useState(false);
     if(props.background_img!=undefined)
     {
         let zoom=Math.max(  windowSize.width /props.background_img_size.width ,
@@ -46,41 +47,43 @@ export function Background(props) {
                 "left":background_img_left,"top":background_img_top,"z-index": "-1"}}>
             <img src={props.background_img} style={{"object-fit": "cover","width": "100%"}}/>
         </div>
-        <div style={Object.assign({
-            "background": props.background,
-        },props.custom_style)} className={(props.title!=undefined)?"Background BackgroundNoTopPadding":"Background"}>
+        <div ref={ref} style={Object.assign({
+                    "background": props.background,
+                },props.custom_style)} className={(props.title!=undefined)?"Background BackgroundNoTopPadding":"Background"}>
             {(props.title!=undefined)?(
                 <>
-                <Card titleCard>
-                    {/*<Flex align="center" justify="space-between">
-                        {props.title_logo && <a href="/"><Image src={props.title_logo} height={"50px"}></Image></a>}
-                        <Text>{props.title}</Text>
-                        {props.title_logo && <Image src={props.title_logo} height={"50px"} style={{"opacity":"0"}}></Image>}
-                    </Flex>*/}
-                    <Row justify={"center"} align={"middle"}>
-                        <Col span={8}>
-                            <Flex justify={"start"}>
-                                {props.title_logo && <a href="/"><Image src={props.title_logo} height={"50px"}></Image></a>}
-                            </Flex>
-                        </Col>
-                        <Col span={8}>
-                            <Flex justify={"center"}>
-                                <Text>{props.title}</Text>
-                            </Flex>
-                        </Col>
-                        <Col span={8}>
-                            <Flex justify={"center"}>
-                                {props.title_end_component}
-                            </Flex>
-                        </Col>
-                    </Row>
-                </Card>
+                <Affix offsetTop={0} target={()=>ref.current} onChange={(affixed)=>{setTitleAffixed(affixed);console.log(affixed);}}>
+                    <Card titleCard custom_style={titleAffixed?{"backdropFilter":"blur(8px)"}:{}}>
+                        {/*<Flex align="center" justify="space-between">
+                            {props.title_logo && <a href="/"><Image src={props.title_logo} height={"50px"}></Image></a>}
+                            <Text>{props.title}</Text>
+                            {props.title_logo && <Image src={props.title_logo} height={"50px"} style={{"opacity":"0"}}></Image>}
+                        </Flex>*/}
+                        <Row justify={"center"} align={"middle"}>
+                            <Col span={8}>
+                                <Flex justify={"start"}>
+                                    {props.title_logo && <a href="/"><Image src={props.title_logo} height={"50px"}></Image></a>}
+                                </Flex>
+                            </Col>
+                            <Col span={8}>
+                                <Flex justify={"center"}>
+                                    <Text>{props.title}</Text>
+                                </Flex>
+                            </Col>
+                            <Col span={8}>
+                                <Flex justify={"center"}>
+                                    {props.title_end_component}
+                                </Flex>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Affix>
                 <NextLine />
                 </>
                 ):(<></>)}
             {props.children}
         </div></>);
-}
+});
 
 export function Card(props) {
     //console.log(theme.useToken());
@@ -95,6 +98,9 @@ export const Text=forwardRef((props,ref)=>{
     var color=theme.useToken().token.colorText;
     if(props.inPrimary){
         color=theme.useToken().token.primaryColor;
+    }
+    if(props.link){
+        color=theme.useToken().token.colorLink;
     }
     return (<span style={Object.assign({
         "fontSize": text_size[props.type ? props.type : "normal"],
@@ -124,7 +130,7 @@ export function Image(props) {
         </>;
     }
     return (
-        <div style={Object.assign({}, props.custom_style)}><img style={{"height":props.height}}
+        <div style={Object.assign({}, props.custom_style)}><img style={props.fill_width?{"width":"100%"}:{"height":props.height}}
                alt={""} {...props}/>{description_element}</div>
     );
 }
