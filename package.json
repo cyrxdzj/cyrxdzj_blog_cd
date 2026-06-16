@@ -5,17 +5,19 @@
     "main": "index.js",
     "scripts": {
         "start": "cross-env BUILD_MODE=development webpack-dev-server",
-        "build": "webpack --mode production"
+        "build": "node scripts/compile_post_list.js && webpack --mode production"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
         "antd": "^6.4.4",
+        "openai": "^6.42.0",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-markdown": "^10.1.0",
-        "remark-gfm": "^4.0.1"
+        "remark-gfm": "^4.0.1",
+        "undici": "^8.5.0"
     },
     "devDependencies": {
         "@babel/core": "^7.29.7",

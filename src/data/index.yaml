@@ -1,3 +1,6 @@
 posts:
-- id: welcome
-  title: 欢迎来到cyrxdzj的博客
+  - id: welcome
+    title: 欢迎来到cyrxdzj的博客
+    editTimeStr: 2026-06-16T01:26:27.197Z
+    length: 853
+    summary: 该博客文章介绍了其基于React、Webpack、Ant Design和Cyrx Design构建的技术栈，并提供了Markdown渲染器的全面测试示例。
