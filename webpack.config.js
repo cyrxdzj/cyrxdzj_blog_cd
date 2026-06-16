@@ -21,10 +21,9 @@ const staticPages = [
 // 动态生成 post 页面条目
 const postPages = posts.map(post => ({
     name: `post_${post.id}`,
-    id: post.id,
-    title: post.title,
     template: './src/public/post.html',
     entry: './src/entries/post.js',
+    ...post,
 }));
 
 // 全部页面列表
@@ -50,6 +49,9 @@ postPages.forEach(p => {
         markdown,    // 覆盖或添加 markdown 字段
     };
 });
+
+// tags 映射，供 post 页面使用
+const tagsMap = indexData.tags || {};
 module.exports = [
     // ===== 配置 1：前端 Bundle（Browser 环境）=====
     {
@@ -132,7 +134,7 @@ module.exports = [
                         ...page,  // 包含 id, title, name 等所有 index.yaml 字段
                         markdown,
                     };
-                    const dataScript = `<script>window.__INITIAL_STATE__ = ${JSON.stringify({ post: postData })};</script>`;
+                    const dataScript = `<script>window.__INITIAL_STATE__ = ${JSON.stringify({ post: postData, tagsMap: tagsMap })};</script>`;
                     return {
                         postDataScript: dataScript,
                         documentTitle: `${page.title} - cyrxdzj的博客`,
@@ -146,6 +148,8 @@ module.exports = [
                 pageNames: allPages.map(p => p.name),
                 staticPageNames: staticPages.map(p => p.name),
                 ssrPostData,
+                tagsMap,
+                indexData,
             }),]),
         devServer: {
             port: 3000,

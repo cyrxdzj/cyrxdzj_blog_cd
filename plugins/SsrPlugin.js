@@ -7,13 +7,16 @@ class SsrPlugin {
      * @param {string} options.ssrBundle - SSR bundle 的绝对路径
      * @param {string[]} options.pageNames - 需要 SSR 的页面名称列表
      * @param {string[]} options.staticPageNames - 静态页面名称列表（不含 post）
-     * @param {Object} [options.ssrPostData] - 每个 post 页面的数据：{ [pageName]: { id, title, markdown } }
+     * @param {Object} [options.ssrPostData] - 每个 post 页面的数据：{ [pageName]: { ...post,markdown } }
+     * @param {Object} [options.tagsMap] - tag列表
      */
     constructor(options) {
         this.ssrBundle = options.ssrBundle;
         this.pageNames = options.pageNames;
         this.staticPageNames = options.staticPageNames || [];
         this.ssrPostData = options.ssrPostData || {};
+        this.tagsMap = options.tagsMap || {};
+        this.indexData = options.indexData || {};
     }
 
     apply(compiler) {
@@ -30,12 +33,6 @@ class SsrPlugin {
             } catch (err) {
                 console.error('[SsrPlugin] Failed to load SSR bundle:', err.message);
                 console.log(err);
-                callback();
-                return;
-            }
-
-            if (typeof ssrModule.renderPage !== 'function') {
-                console.error('[SsrPlugin] SSR bundle must export renderPage(pageName, postData)');
                 callback();
                 return;
             }
@@ -62,14 +59,21 @@ class SsrPlugin {
                 let html = fs.readFileSync(htmlPath, 'utf-8');
 
                 try {
-                    const postData = this.ssrPostData[name] || null;
-                    const appString = ssrModule.renderPage(name, postData);
+                    const isStatic = this.staticPageNames.includes(name);
+                    let props;
+                    if (isStatic) {
+                        props = { index_yaml: this.indexData, tagsMap: this.tagsMap };
+                    } else {
+                        props = this.ssrPostData[name] || null;
+                    }
+                    const appString = ssrModule.renderPage(name, props, this.tagsMap);
 
                     // SSR 渲染的组件替换占位符
                     html = html.replace('<div id="ssr"></div>', appString);
 
                     fs.writeFileSync(htmlPath, html, 'utf-8');
-                    console.log(`[SsrPlugin] SSR rendered: ${isPost ? 'post/' + (postData ? postData.id : name) : name}.html`);
+                    const renderedId = isStatic ? this.ssrPostData[name]?.id : name;
+                    console.log(`[SsrPlugin] SSR rendered: ${isPost ? 'post/' + (renderedId || name) : name}.html`);
                 } catch (err) {
                     console.error(`[SsrPlugin] Error rendering ${name}:`, err.message);
                     console.log(err);

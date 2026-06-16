@@ -18,12 +18,12 @@ const pageComponents = {
  * @param {Object|null} postData - 博文数据 { id, title, markdown }，非博文页面为 null
  * @returns {string} 渲染后的组件 HTML 字符串（不含数据脚本，由插件注入）
  */
-export function renderPage(pageName, postData) {
+export function renderPage(pageName, postData, tagsMap) {
     // 判断是否为 post 页面：pageName 以 'post_' 开头且 postData 非空
     const isPost = postData !== null && pageName.startsWith('post_');
 
     if (isPost) {
-        return renderToString(React.createElement(PostPage, { post: postData }));
+        return renderToString(React.createElement(PostPage, { post: postData, tagsMap: tagsMap}));
     }
 
     // 将 pageName 映射到静态页面组件
@@ -32,5 +32,7 @@ export function renderPage(pageName, postData) {
         console.warn(`[SSR] Unknown page: ${pageName}, rendering fallback`);
         return '<div>Page not found</div>';
     }
-    return renderToString(React.createElement(component));
+    // 对于静态页面，postData 其实是包含 index_yaml 等数据的对象
+    const pageProps = (typeof postData === 'object' && postData !== null) ? postData : {};
+    return renderToString(React.createElement(component, pageProps));
 }

@@ -9,9 +9,7 @@ import MainLogo from "../media/common/main_logo.png";
 function IndexPage(props) {
     document.title="cyrxdzj的博客";
     const [notificationAPI, contextHolder] = notification.useNotification();
-    console.log(props.index_yaml);
     const { token } = theme.useToken();
-    const tagEntries = Object.entries(props.index_yaml.tags || {});
     const [selectedTags, setSelectedTags] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
@@ -86,7 +84,7 @@ function IndexPage(props) {
                             </Flex>
                             <NextLine/>
                             <Flex wrap gap={8}>
-                                {tagEntries.map(([tagId, tagData]) => (
+                                {Object.entries(props.index_yaml.tags).map(([tagId, tagData]) => (
                                     <Tag
                                         key={tagId}
                                         color={selectedTags.includes(tagId) ? token.colorPrimary : token.colorPrimary}
@@ -113,7 +111,7 @@ function IndexPage(props) {
                                                 <Text>{formatTimestamp(post.editTimeStr)}</Text>
                                                 <Text>{post.length} 字</Text>
                                                 {post.tags && post.tags.length > 0 && (
-                                                    <Flex gap={4} wrap style={{ justifyContent: "flex-end", marginTop: 4 }}>
+                                                    <Flex gap={8} wrap style={{ justifyContent: "flex-end", marginTop: 8 }}>
                                                         {post.tags.map(tagId => (
                                                             <Tag
                                                                 key={tagId}

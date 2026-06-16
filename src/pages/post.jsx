@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Affix, Col, ConfigProvider, Flex, notification, Row, Table } from "antd";
-import { AntdConfigProvider_light } from "../utils/utils";
+import { Affix, Col, ConfigProvider, Flex, notification, Row, Table, Tag, theme } from "antd";
+import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, Paragraph, NextLine, Image } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
@@ -26,7 +26,7 @@ function is_same_page(url1, url2) {
  * 将 Markdown 表格节点渲染为 Ant Design Table 组件
  */
 function AntTable({ node }) {
-    console.log(node);
+    //console.log(node);
     // 提取表头行（thead 下的第一个 tr）
     const thead = node.children?.find(child => child.tagName === 'thead');
     const tbody = node.children?.find(child => child.tagName === 'tbody');
@@ -57,7 +57,7 @@ function AntTable({ node }) {
         return row;
     });
 
-    console.log(dataSource);
+    //console.log(dataSource);
 
     return (
         <Table
@@ -82,9 +82,10 @@ function extractText(node) {
 }
 
 // 博文详情页组件，接收 post 对象（含 id, title, markdown）
-function PostPage({ post }) {
+function PostPage({ post, tagsMap = {} }) {
     document.title=`${post?.title} - cyrxdzj的博客`
     const [notificationAPI, contextHolder] = notification.useNotification();
+    const { token } = theme.useToken();
     const cardRef = useRef(null);
     const backgroundRef = useRef(null);
     const [affixOffset, setAffixOffset] = useState(0);
@@ -126,6 +127,20 @@ function PostPage({ post }) {
                             <Card ref={cardRef}>
                                 <Flex justify="center">
                                     <Text type={"h1"}>{post?.title}</Text>
+                                </Flex>
+                                <NextLine/>
+                                <Flex justify="space-between" align="flex-start">
+                                    <Flex vertical>
+                                        <Text>{formatTimestamp(post?.editTimeStr)}</Text>
+                                        <Text>{post?.length} 字</Text>
+                                    </Flex>
+                                    {post?.tags && post.tags.length > 0 && (
+                                        <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
+                                            {post.tags.map(tagId => (
+                                                <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
+                                            ))}
+                                        </Flex>
+                                    )}
                                 </Flex>
                             </Card>
                         </Affix>
