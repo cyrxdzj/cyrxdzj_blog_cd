@@ -6,6 +6,15 @@ posts:
     editTimeStr: 2026-06-16T01:26:27.197Z
     length: 853
     summary: 该博客文章介绍了其基于React、Webpack、Ant Design和Cyrx Design构建的技术栈，并提供了Markdown渲染器的全面测试示例。
+  - id: LuoguP5608Solution
+    title: 洛谷P5608 [Ynoi2013]文化课 题解
+    tags:
+      - oi
+    summary: 本文是一道题解，详细讲解如何通过维护连乘段、优化vector与数组、缓存幂运算等方法，解决支持修改运算符和数值的表达式求值问题。
+    editTimeStr: 2026-06-16T10:53:30.522Z
+    length: 4442
 tags:
   welcome:
     name: 欢迎
+  oi:
+    name: OI

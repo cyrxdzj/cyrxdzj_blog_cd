@@ -12,12 +12,18 @@
     "license": "ISC",
     "dependencies": {
         "@ant-design/icons": "^6.2.5",
+        "@shikijs/core": "^4.2.0",
+        "@shikijs/rehype": "^4.2.0",
         "antd": "^6.4.4",
+        "katex": "^0.17.0",
         "openai": "^6.42.0",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-markdown": "^10.1.0",
+        "rehype-katex": "^7.0.1",
         "remark-gfm": "^4.0.1",
+        "remark-math": "^6.0.0",
+        "shiki": "^4.2.0",
         "undici": "^8.5.0"
     },
     "devDependencies": {

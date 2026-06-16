@@ -61,6 +61,7 @@ module.exports = [
         }, {}),
         output: {
             path: path.resolve(__dirname, 'dist'),
+            publicPath: '/',
             // 使用函数动态决定 JS 输出路径
             filename: (pathData) => {
                 const chunkName = pathData.chunk && pathData.chunk.name;
@@ -98,7 +99,7 @@ module.exports = [
                     type: 'asset/source',
                 },
                 {
-                    test: /\.(png|jpe?g|gif|svg|webp|ico)$/i,
+                    test: /\.(png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot)$/i,
                     type: 'asset/resource',
                 },
             ],
@@ -154,7 +155,7 @@ module.exports = [
         devServer: {
             port: 3000,
             hot: true,
-            open: true,
+            open: false,
             watchFiles: ['src/data/**/*'],
             historyApiFallback: {
                 rewrites: posts.map(p => ({
