@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Affix, Col, ConfigProvider, Flex, notification, Row } from "antd";
+import { Affix, Col, ConfigProvider, Flex, notification, Row, Table } from "antd";
 import { AntdConfigProvider_light } from "../utils/utils";
 import { Background, Text, Card, Paragraph, NextLine, Image } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
@@ -22,6 +22,64 @@ function is_same_page(url1, url2) {
     return norm1 === norm2;
 }
 
+/**
+ * 将 Markdown 表格节点渲染为 Ant Design Table 组件
+ */
+function AntTable({ node }) {
+    console.log(node);
+    // 提取表头行（thead 下的第一个 tr）
+    const thead = node.children?.find(child => child.tagName === 'thead');
+    const tbody = node.children?.find(child => child.tagName === 'tbody');
+
+    if (!thead || !tbody) {
+        // 降级为原生表格
+        return <table>{node.children}</table>;
+    }
+
+    // 提取列定义
+    const headerRow = thead.children?.find(child => child.tagName === 'tr');
+    const columns = (headerRow?.children?.filter(child => child.tagName === 'th') || []).map((th, colIndex) => ({
+        title: <Text bold>{extractText(th)}</Text>,
+        dataIndex: `col${colIndex}`,
+        key: `col${colIndex}`,
+        render: (text) => <Text>{text}</Text>,
+    })) || [];
+
+    // 提取数据行
+    const dataRows = (tbody.children?.filter(child => child.tagName === 'tr') || []);
+    const dataSource = dataRows.map((tr, rowIndex) => {
+        const row = { key: rowIndex };
+        const cells = (tr.children?.filter(child => child.tagName === 'td') || []);
+        cells.forEach((td, colIndex) => {
+            row[`col${colIndex}`] = extractText(td);
+        });
+        return row;
+    });
+
+    console.log(dataSource);
+
+    return (
+        <Table
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+            size="small"
+            bordered
+            style={{ margin: '16px 0' }}
+        />
+    );
+}
+
+/**
+ * 提取节点内的纯文本（用于表格单元格）
+ */
+function extractText(node) {
+    //if (typeof node === 'string') return node;
+    if (node?.children) return node.children.map(extractText).join('');
+    else return node.value;
+    return '';
+}
+
 // 博文详情页组件，接收 post 对象（含 id, title, markdown）
 function PostPage({ post }) {
     document.title=`${post?.title} - cyrxdzj的博客`
@@ -40,6 +98,7 @@ function PostPage({ post }) {
         p:({node, ...props}) => <Paragraph {...props}/>,
         li:({node, ...props}) => <li {...props}><Text>{props.children}</Text></li>,
         img:({node, ...props}) => <Image {...props} fill_width/>,
+        table:({node, ...props}) => <AntTable node={node} />,
     }}>{post?.markdown}</ReactMarkdown>);
 
     useEffect(() => {
