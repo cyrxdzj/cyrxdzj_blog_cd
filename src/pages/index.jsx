@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Col, ConfigProvider, Flex, notification, Pagination, Row } from "antd";
-import { AntdConfigProvider_light } from "../utils/utils";
+import { Col, ConfigProvider, Flex, notification, Pagination, Row, Tag, theme, Button, Tooltip } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, NextLine } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
@@ -9,10 +10,37 @@ function IndexPage(props) {
     document.title="cyrxdzj的博客";
     const [notificationAPI, contextHolder] = notification.useNotification();
     console.log(props.index_yaml);
+    const { token } = theme.useToken();
+    const tagEntries = Object.entries(props.index_yaml.tags || {});
+    const [selectedTags, setSelectedTags] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
+    // 筛选：如果 selectedTags 为空则显示所有，否则只保留包含所有选中标签的文章
+    const filteredPosts = selectedTags.length === 0
+        ? props.index_yaml.posts
+        : props.index_yaml.posts.filter(post =>
+            selectedTags.every(tagId => post.tags && post.tags.includes(tagId))
+          );
     const startIndex = (currentPage - 1) * pageSize;
-    const currentPosts = props.index_yaml.posts.slice(startIndex, startIndex + pageSize);
+    const currentPosts = filteredPosts.slice(startIndex, startIndex + pageSize);
+    // 点击文章列表中的 tag：清空现有选择，仅选中该 tag
+    const handleTagFromPostClick = (tagId, e) => {
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        setSelectedTags([tagId]);
+        setCurrentPage(1);
+    };
+
+    const handleTagClick = (tagId) => {
+        setSelectedTags(prev =>
+            prev.includes(tagId)
+                ? prev.filter(t => t !== tagId)
+                : [...prev, tagId]
+        );
+        setCurrentPage(1);
+    };
     return (
         <ConfigProvider theme={AntdConfigProvider_light}>
             {contextHolder}
@@ -30,9 +58,45 @@ function IndexPage(props) {
                                 <Text type={"h1"}>I am cyrxdzj.</Text>
                             </Flex>
                             <Row gutter={[8, 16]}>
-                                <Col span={8}><Text>Luogu</Text></Col>
-                                <Col span={16}><a href="https://luogu.com.cn/user/387836"><Text>https://luogu.com.cn/user/387836</Text></a></Col>
+                                <Col span={8}><Text>洛谷</Text></Col>
+                                <Col span={16}><a href="https://luogu.com.cn/user/387836"><Text link>cyrxdzj</Text></a></Col>
                             </Row>
+                            <Row gutter={[8, 16]}>
+                                <Col span={8}><Text>oiClass</Text></Col>
+                                <Col span={16}><a href="https://oiclass.com/user/10161"><Text link>cyrxdzj</Text></a></Col>
+                            </Row>
+                        </Card>
+                        <NextLine/>
+                        <Card>
+                            <Flex align="center" gap={8}>
+                                <Text type={"h3"}>标签</Text>
+                                {selectedTags.length > 0 && (
+                                    <Tooltip title={<Text inPrimary>清空标签筛选</Text>}>
+                                        <Button
+                                            shape="circle"
+                                            icon={<DeleteOutlined />}
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedTags([]);
+                                                setCurrentPage(1);
+                                            }}
+                                        />
+                                    </Tooltip>
+                                )}
+                            </Flex>
+                            <NextLine/>
+                            <Flex wrap gap={8}>
+                                {tagEntries.map(([tagId, tagData]) => (
+                                    <Tag
+                                        key={tagId}
+                                        color={selectedTags.includes(tagId) ? token.colorPrimary : token.colorPrimary}
+                                        variant={selectedTags.includes(tagId) ?"solid":"filled"}
+                                        onClick={() => handleTagClick(tagId)}
+                                    >
+                                        {tagData.name}
+                                    </Tag>
+                                ))}
+                            </Flex>
                         </Card>
                     </Col>
                     <Col span={16}>
@@ -40,16 +104,36 @@ function IndexPage(props) {
                             {currentPosts.map(post => (
                                 <a href={`/post/${post.id}`} target='_blank'>
                                     <Card key={post.id}>
-                                        <Text type={"h3"}>{post.title}</Text>
-                                        <NextLine/>
-                                        <Text>{post.summary}</Text>
+                                        <Flex justify="space-between" align="flex-start">
+                                            <Flex vertical flex={1}>
+                                                <Text type={"h3"}>{post.title}</Text>
+                                                <Text>{post.summary}</Text>
+                                            </Flex>
+                                            <Flex vertical align="flex-end" style={{ whiteSpace: "nowrap" }}>
+                                                <Text>{formatTimestamp(post.editTimeStr)}</Text>
+                                                <Text>{post.length} 字</Text>
+                                                {post.tags && post.tags.length > 0 && (
+                                                    <Flex gap={4} wrap style={{ justifyContent: "flex-end", marginTop: 4 }}>
+                                                        {post.tags.map(tagId => (
+                                                            <Tag
+                                                                key={tagId}
+                                                                color={token.colorPrimary}
+                                                                variant="solid"
+                                                                onClick={(e) => handleTagFromPostClick(tagId, e)}
+                                                                style={{ cursor: "pointer" }}
+                                                            >{props.index_yaml.tags[tagId].name}</Tag>
+                                                        ))}
+                                                    </Flex>
+                                                )}
+                                            </Flex>
+                                        </Flex>
                                     </Card>
                                 </a>
                             ))}
                             <Flex justify="center">
                                 <Pagination
                                     current={currentPage}
-                                    total={props.index_yaml.posts.length}
+                                    total={filteredPosts.length}
                                     pageSize={pageSize}
                                     onChange={(page) => setCurrentPage(page)}
                                 />
