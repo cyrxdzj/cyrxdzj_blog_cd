@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Col, ConfigProvider, Flex, notification, Pagination, Row, Tag, theme, Button, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
-import { Background, Text, Card, NextLine } from "../CyrxDesign/Components";
+import { Background, Text, Card, NextLine, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 
@@ -47,7 +47,22 @@ function IndexPage(props) {
                 background_img_size={{ "width": 2338, "height": 1440 }}
                 title_logo={MainLogo}
                 title="cyrxdzj的博客"
-                title_end_component={<></>}
+                title_end_component={
+                    <HeadNavigator>
+                        <HeadNavigator.Item
+                            active={window.location.pathname === "/"}
+                            onClick={() => window.location.href = "/"}
+                        >
+                            首页与文章列表
+                        </HeadNavigator.Item>
+                        <HeadNavigator.Item
+                            active={window.location.pathname === "/friends"}
+                            onClick={() => window.location.href = "/friends"}
+                        >
+                            友情链接
+                        </HeadNavigator.Item>
+                    </HeadNavigator>
+                }
             >
                 <Row gutter={[8, 16]}>
                     <Col span={8}>

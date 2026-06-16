@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Affix, Col, ConfigProvider, Flex, notification, Row, Table, Tag, theme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
-import { Background, Text, Card, Paragraph, NextLine, Image } from "../CyrxDesign/Components";
+import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 
@@ -118,7 +118,22 @@ function PostPage({ post, tagsMap = {} }) {
                 background_img_size={{ "width": 2338, "height": 1440 }}
                 title_logo={MainLogo}
                 title={post?.title}
-                title_end_component={<></>}
+                title_end_component={
+                    <HeadNavigator>
+                        <HeadNavigator.Item
+                            active={window.location.pathname === "/"}
+                            onClick={() => window.location.href = "/"}
+                        >
+                            首页与文章列表
+                        </HeadNavigator.Item>
+                        <HeadNavigator.Item
+                            active={window.location.pathname === "/friends"}
+                            onClick={() => window.location.href = "/friends"}
+                        >
+                            友情链接
+                        </HeadNavigator.Item>
+                    </HeadNavigator>
+                }
                 ref={backgroundRef}
             >
                 <Row gutter={[8, 16]}>

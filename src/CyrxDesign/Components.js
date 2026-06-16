@@ -91,7 +91,8 @@ export const Background = forwardRef((props, ref) => {
 
 export function Card(props) {
     //console.log(theme.useToken());
-    return (<div style={Object.assign({"background":theme.useToken().token.colorBgBase},props.custom_style)} {...props}
+    const token=theme.useToken().token;
+    return (<div style={Object.assign({"background":token.colorBgBase},props.custom_style)} {...props}
             className={"Card"+(props.titleCard?" CardTitle":"")}>
                 {props.children}
             </div>);
@@ -99,12 +100,13 @@ export function Card(props) {
 
 export const Text=forwardRef((props,ref)=>{
     //console.log(props);
-    var color=theme.useToken().token.colorText;
+    const token=theme.useToken().token;
+    var color=token.colorText;
     if(props.inPrimary){
-        color=theme.useToken().token.primaryColor;
+        color=token.primaryColor;
     }
     if(props.link){
-        color=theme.useToken().token.colorLink;
+        color=token.colorLink;
     }
     return (<span style={Object.assign({
         "fontSize": text_size[props.type ? props.type : "normal"],
@@ -138,3 +140,41 @@ export function Image(props) {
                alt={""} {...props}/>{description_element}</div>
     );
 }
+
+// HeadNavigator：页面顶部导航栏
+export const HeadNavigator = (props) => {
+    return (
+        <Flex className="HeadNavigator"
+              align="center"
+              justify="end"
+              gap={8}
+              style={Object.assign({
+              }, props.custom_style)}>
+            {props.children}
+        </Flex>
+    );
+};
+
+// HeadNavigator.Item：导航子项
+HeadNavigator.Item = (props) => {
+    const [hovered, setHovered] = useState(false);
+    const isActive = props.active || hovered;
+    const handleClick = () => {
+        if (props.onClick) {
+            props.onClick();
+        }
+    };
+    const token=theme.useToken().token;
+    return (
+        <div className="HeadNavigatorItem"
+             onClick={handleClick}
+             onMouseEnter={() => setHovered(true)}
+             onMouseLeave={() => setHovered(false)}
+             style={Object.assign({
+                 backgroundColor: isActive ? token.colorPrimary+"66" : "transparent",
+             }, props.custom_style)}>
+            {props.icon && <span style={{marginRight: 6}}>{props.icon}</span>}
+            <Text inPrimary={isActive} custom_style={(isActive)?{"color":"white"}:{}}>{props.label || props.children}</Text>
+        </div>
+    );
+};
