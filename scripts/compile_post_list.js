@@ -3,15 +3,21 @@ const fs = require("fs");
 const yaml = require("js-yaml");
 const { OpenAI } = require("openai");
 const config = require("./config");
-const { apiKey } = require("./credentials");
-const { default: override_ca } = require("./override_ca");
 
-// OpenAI 客户端（兼容 DeepSeek）
-override_ca();
-const openai = new OpenAI({
-    baseURL: "https://cyrxdzj.io/llm/",
-    apiKey: apiKey,
-});
+let openai = null;
+let hasCredentials = false;
+try {
+    const { apiKey } = require("./credentials");
+    const { default: override_ca } = require("./override_ca");
+    override_ca();
+    openai = new OpenAI({
+        baseURL: "https://cyrxdzj.io/llm/",
+        apiKey: apiKey,
+    });
+    hasCredentials = true;
+} catch (err) {
+    console.warn("credentials.js 或 override_ca.js 加载失败，将跳过 AI 摘要生成:", err.message);
+}
 
 // 数据目录
 const dataDir = config.data_dir;
@@ -79,20 +85,29 @@ if (!indexData || !Array.isArray(indexData.posts)) {
         const content = fs.readFileSync(mdPath, "utf8");
 
         if (needSummary) {
-            try {
-                const response = await openai.chat.completions.create({
-                    model: "deepseek-v4-flash",
-                    messages: [
-                        { role: "system", content: "你是一个文章摘要生成助手。请用一句话概括以下文章内容，不超过100个字。" },
-                        { role: "user", content: content },
-                    ],
-                });
-                const summary = response.choices[0].message.content.trim();
-                post.summary = summary;
-                console.log(`文章 "${id}" 已生成摘要: ${summary}`);
-            } catch (err) {
-                console.warn(`生成摘要失败 (${id}): ${err.message}`);
-                console.log(err);
+            if (hasCredentials) {
+                try {
+                    const response = await openai.chat.completions.create({
+                        model: "deepseek-v4-flash",
+                        messages: [
+                            { role: "system", content: "你是一个文章摘要生成助手。请用一句话概括以下文章内容，不超过100个字。" },
+                            { role: "user", content: content },
+                        ],
+                    });
+                    const summary = response.choices[0].message.content.trim();
+                    post.summary = summary;
+                    console.log(`文章 "${id}" 已生成摘要: ${summary}`);
+                } catch (err) {
+                    console.warn(`生成摘要失败 (${id}): ${err.message}`);
+                    console.log(err);
+                }
+            } else {
+                // credentials 不可用，不调用 AI
+                if (!post.summary) {
+                    post.summary = ""; // 之前不存在，设为空字符串
+                    console.log(`文章 "${id}" 摘要设为空字符串（无 AI 服务）`);
+                }
+                // 如果之前存在，则保持不变
             }
         }
 
