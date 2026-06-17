@@ -14,6 +14,10 @@ if (typeof window === 'undefined') {
         // 可添加更多属性以防止后续报错
         navigator: { userAgent: 'node.js' },
         document: global.document,
+        location: {
+            pathname: "",
+            href: "",
+        }
     };
 }
 if (typeof document === 'undefined')

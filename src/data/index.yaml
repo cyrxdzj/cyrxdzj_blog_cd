@@ -11,7 +11,7 @@ posts:
     tags:
       - oi
     summary: 本文是一道题解，详细讲解如何通过维护连乘段、优化vector与数组、缓存幂运算等方法，解决支持修改运算符和数值的表达式求值问题。
-    editTimeStr: 2026-06-16T10:53:30.522Z
+    editTimeStr: 2026-06-16T11:22:02.330Z
     length: 4442
 tags:
   welcome:
