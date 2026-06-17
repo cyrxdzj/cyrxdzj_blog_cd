@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
 import { Affix, Col, ConfigProvider, Flex, notification, Row, Table, Tag, theme as antdTheme } from "antd";

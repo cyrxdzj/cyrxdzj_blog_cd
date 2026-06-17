@@ -26,10 +26,9 @@ yarn-error.log*
 
 # font
 
-*.ttf
-*.woff2
-src/media/common/LXGWWenkai-Regular-Split/
 src/media/common/bootstrap-icons-Split/
+src/media/common/bootstrap-icons.woff2
+src/media/common/LXGWWenkai-Regular.ttf
 
 # SSR
 .ssr-cache/

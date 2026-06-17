@@ -3,6 +3,7 @@ import { Col, ConfigProvider, Flex, notification, Pagination, Row, Tag, theme, B
 import { DeleteOutlined } from "@ant-design/icons";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, NextLine, HeadNavigator } from "../CyrxDesign/Components";
+import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 
