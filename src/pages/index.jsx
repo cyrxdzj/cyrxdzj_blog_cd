@@ -15,11 +15,12 @@ function IndexPage(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
     // 筛选：如果 selectedTags 为空则显示所有，否则只保留包含所有选中标签的文章
-    const filteredPosts = selectedTags.length === 0
+    const filteredPosts = (selectedTags.length === 0
         ? props.index_yaml.posts
         : props.index_yaml.posts.filter(post =>
             selectedTags.every(tagId => post.tags && post.tags.includes(tagId))
-          );
+          )
+    ).slice().reverse();
     const startIndex = (currentPage - 1) * pageSize;
     const currentPosts = filteredPosts.slice(startIndex, startIndex + pageSize);
     // 点击文章列表中的 tag：清空现有选择，仅选中该 tag
