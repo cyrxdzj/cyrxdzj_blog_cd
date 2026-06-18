@@ -233,21 +233,23 @@ function PostPage({ post, tagsMap = {} }) {
 
     // 当 Markdown 内容变化时重新渲染
     useEffect(() => {
-        setRenderedMarkdown(<ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]} components={{
-        h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine size='0px'/></>,
-        h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine size='0px'/></>,
-        h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine size='0px'/></>,
-        h4:({node, ...props}) => <><Text type={"h4"} {...props}/><NextLine size='0px'/></>,
-        h5:({node, ...props}) => <><Text type={"h5"} {...props}/><NextLine size='0px'/></>,
-        h6:({node, ...props}) => <><Text type={"h6"} {...props}/><NextLine size='0px'/></>,
-        a:({node, ...props}) => <><a href={props.href} target={is_same_page(props.href,window?.location?.href)?"_self":"_blank"}><Text link>{props.children}</Text></a></>,
-        p:({node, ...props}) => <Paragraph {...props}/>,
-        strong:({node, ...props}) => <Text bold {...props}></Text>,
-        li:({node, ...props}) => <li {...props}>{props.children}</li>,
-        img:({node, ...props}) => <Image {...props} fill_width/>,
-        table:({node, ...props}) => <AntTable node={node} />,
-        code:CodeBlock,
-    }}>{markdownContent}</ReactMarkdown>);
+        setRenderedMarkdown(<ConfigProvider theme={AntdConfigProvider_light}>
+            <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]} components={{
+                h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine size='0px'/></>,
+                h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine size='0px'/></>,
+                h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine size='0px'/></>,
+                h4:({node, ...props}) => <><Text type={"h4"} {...props}/><NextLine size='0px'/></>,
+                h5:({node, ...props}) => <><Text type={"h5"} {...props}/><NextLine size='0px'/></>,
+                h6:({node, ...props}) => <><Text type={"h6"} {...props}/><NextLine size='0px'/></>,
+                a:({node, ...props}) => <><a href={props.href} target={is_same_page(props.href,window?.location?.href)?"_self":"_blank"}><Text link>{props.children}</Text></a></>,
+                p:({node, ...props}) => <Paragraph {...props}/>,
+                strong:({node, ...props}) => <Text bold {...props}></Text>,
+                li:({node, ...props}) => <li {...props} style={{"color":antdTheme.useToken().token.colorText}}>{props.children}</li>,
+                img:({node, ...props}) => <Image {...props} fill_width/>,
+                table:({node, ...props}) => <AntTable node={node} />,
+                code:CodeBlock,
+            }}>{markdownContent}</ReactMarkdown>
+        </ConfigProvider>);
     }, [markdownContent]);
 
     useEffect(() => {
