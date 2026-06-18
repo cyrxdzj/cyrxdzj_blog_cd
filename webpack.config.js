@@ -98,8 +98,19 @@ module.exports = [
                     test: /\.md$/,
                     type: 'asset/source',
                 },
+                // src/media/posts 中的文件保持原始文件名（不添加 hash）
                 {
                     test: /\.(png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot)$/i,
+                    include: path.resolve(__dirname, 'src/media/posts'),
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'static/media/posts/[name][ext]',
+                    },
+                },
+                // 其他媒体文件使用 hash 命名
+                {
+                    test: /\.(png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot)$/i,
+                    exclude: path.resolve(__dirname, 'src/media/posts'),
                     type: 'asset/resource',
                 },
             ],
@@ -157,6 +168,20 @@ module.exports = [
             hot: true,
             open: false,
             watchFiles: ['src/data/**/*'],
+            static: [
+                // 将 /posts/md 映射到 src/data/posts 目录
+                {
+                    directory: path.join(__dirname, 'src/data/posts'),
+                    publicPath: '/posts/md',
+                    watch: true,
+                },
+                // 开发模式下直接访问 src/media/posts 中的静态文件
+                {
+                    directory: path.join(__dirname, 'src/media/posts'),
+                    publicPath: '/static/media/posts',
+                    watch: true,
+                },
+            ],
             historyApiFallback: {
                 rewrites: posts.map(p => ({
                     from: new RegExp(`^/post/${p.id}$`),

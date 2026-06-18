@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { createHighlighter } from 'shiki';
@@ -13,6 +14,9 @@ import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } fro
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 import mermaid from 'mermaid';
+
+// 判断是否处于开发模式（localhost:3000）
+const isDev = typeof window !== 'undefined' && window.location.port === '3000';
 
 /**
  * 判断两个 URL 是否指向同一页面（忽略查询参数和锚点）
@@ -201,7 +205,35 @@ function PostPage({ post, tagsMap = {} }) {
     const cardRef = useRef(null);
     const backgroundRef = useRef(null);
     const [affixOffset, setAffixOffset] = useState(0);
-    const [renderedMarkdown,setRenderedMarkdown] =useState(<ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={{
+    // 存储当前渲染用的 Markdown 原文
+    const [markdownContent, setMarkdownContent] = useState(post?.markdown || '');
+    // 渲染 Markdown 的 JSX
+    const [renderedMarkdown,setRenderedMarkdown] =useState(null);
+
+    // 开发模式下动态加载 Markdown 文件
+    useEffect(() => {
+        if (!isDev || !post?.id) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const resp = await fetch(`/posts/md/${post.id}.md`);
+                if (cancelled) return;
+                if (resp.ok) {
+                    const text = await resp.text();
+                    setMarkdownContent(text);
+                } else {
+                    console.warn(`开发模式加载 Markdown 失败: ${resp.status}`);
+                }
+            } catch (err) {
+                console.warn('开发模式加载 Markdown 出错:', err);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [post?.id]);
+
+    // 当 Markdown 内容变化时重新渲染
+    useEffect(() => {
+        setRenderedMarkdown(<ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]} components={{
         h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine size='0px'/></>,
         h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine size='0px'/></>,
         h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine size='0px'/></>,
@@ -215,7 +247,8 @@ function PostPage({ post, tagsMap = {} }) {
         img:({node, ...props}) => <Image {...props} fill_width/>,
         table:({node, ...props}) => <AntTable node={node} />,
         code:CodeBlock,
-    }}>{post?.markdown}</ReactMarkdown>);
+    }}>{markdownContent}</ReactMarkdown>);
+    }, [markdownContent]);
 
     useEffect(() => {
         if (cardRef.current) {
