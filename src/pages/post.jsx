@@ -8,12 +8,14 @@ import 'katex/dist/katex.min.css';
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
-import { Affix, Col, ConfigProvider, Flex, notification, Row, Table, Tag, theme as antdTheme } from "antd";
+import { Affix, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
 import mermaid from 'mermaid';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 // 判断是否处于开发模式（localhost:3000）
 const isDev = typeof window !== 'undefined' && window.location.port === '3000';
@@ -209,6 +211,8 @@ function PostPage({ post, tagsMap = {} }) {
     const [markdownContent, setMarkdownContent] = useState(post?.markdown || '');
     // 渲染 Markdown 的 JSX
     const [renderedMarkdown,setRenderedMarkdown] =useState(null);
+    // 是否正在生成 PDF
+    const [isExporting, setIsExporting] = useState(false);
 
     // 开发模式下动态加载 Markdown 文件
     useEffect(() => {
@@ -252,6 +256,75 @@ function PostPage({ post, tagsMap = {} }) {
         </ConfigProvider>);
     }, [markdownContent]);
 
+    // 将隐藏的 Markdown 渲染区导出为 PDF 并下载
+    const exportToPDF = useCallback(async () => {
+        const container = document.getElementById('pdf-export-container');
+        if (!container || isExporting) return;
+        setIsExporting(true);
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                onclone: (clonedDoc) => {
+                    const clonedContainer = clonedDoc.getElementById('pdf-export-container');
+                    if (clonedContainer) {
+                        clonedContainer.style.opacity = '1';
+                        clonedContainer.style.position = 'static';
+                        clonedContainer.style.left = '0';
+                    }
+                }
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+            const imgWidth = pdfWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // 第一页
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            // 后续页
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight; // 向上偏移
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // 生成下载
+            const blob = pdf.output('blob');
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${post?.title || 'article'}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('导出 PDF 失败:', err);
+        } finally {
+            setIsExporting(false);
+        }
+    }, [post?.title, isExporting]);
+
+    // 捕获 Ctrl+P 快捷键调用 exportToPDF
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                exportToPDF();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [exportToPDF]);
+
     useEffect(() => {
         if (cardRef.current) {
             const rect = cardRef.current.getBoundingClientRect();
@@ -288,34 +361,46 @@ function PostPage({ post, tagsMap = {} }) {
                 <Row gutter={[8, 16]}>
                     <Col span={8}>
                         <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
-                            <Card ref={cardRef}>
-                                <Flex justify="center">
-                                    <Text type={"h1"}>{post?.title}</Text>
-                                </Flex>
-                                <NextLine/>
-                                <Flex justify="space-between" align="flex-start">
-                                    <Flex vertical>
-                                        <Text>{formatTimestamp(post?.editTimeStr)}</Text>
-                                        <Text>{post?.length} 字</Text>
+                            <Spin spinning={isExporting} tip="正在生成PDF">
+                                <Card ref={cardRef}>
+                                    <Flex justify="center">
+                                        <Text type={"h1"}>{post?.title}</Text>
                                     </Flex>
-                                    {post?.tags && post.tags.length > 0 && (
-                                        <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
-                                            {post.tags.map(tagId => (
-                                                <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
-                                            ))}
+                                    <NextLine/>
+                                    <Flex justify="space-between" align="flex-start">
+                                        <Flex vertical>
+                                            <Text>{formatTimestamp(post?.editTimeStr)}</Text>
+                                            <Text>{post?.length} 字</Text>
                                         </Flex>
-                                    )}
-                                </Flex>
-                            </Card>
+                                        {post?.tags && post.tags.length > 0 && (
+                                            <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
+                                                {post.tags.map(tagId => (
+                                                    <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
+                                                ))}
+                                            </Flex>
+                                        )}
+                                    </Flex>
+                                </Card>
+                            </Spin>
                         </Affix>
                     </Col>
                     <Col span={16}>
-                        <Card>
-                            {renderedMarkdown}
-                        </Card>
+                            <Card>
+                                {renderedMarkdown}
+                            </Card>
                     </Col>
                 </Row>
             </Background>
+            <div id="pdf-export-container" style={{ opacity: 0, position: 'fixed', left: '-9999px', top: 0, width: '800px', padding:"80px"}}>
+                <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+                    <Flex vertical>
+                        <Text type="h1">{post?.title}</Text>
+                        <Text>{"编辑于："}{formatTimestamp(post?.editTimeStr)}</Text>
+                    </Flex>
+                    {post?.logo_url && <Image src={post.logo_url} style={{ height: 50, width: 'auto' }} />}
+                </Flex>
+                {renderedMarkdown}
+            </div>
         </ConfigProvider>
     );
 }
