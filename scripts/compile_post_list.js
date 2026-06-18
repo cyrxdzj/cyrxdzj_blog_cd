@@ -90,7 +90,7 @@ if (!indexData || !Array.isArray(indexData.posts)) {
                     const response = await openai.chat.completions.create({
                         model: "deepseek-v4-flash",
                         messages: [
-                            { role: "system", content: "你是一个文章摘要生成助手。请用一句话概括以下文章内容，不超过100个字。" },
+                            { role: "system", content: "你是一个文章摘要生成助手。请用一句话概括以下文章内容，不超过150个字。" },
                             { role: "user", content: content },
                         ],
                     });

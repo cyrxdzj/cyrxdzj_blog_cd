@@ -85,3 +85,11 @@ console.log("Hello, World!");
 这是一个脚注[^1]。
 
 [^1]: 这是脚注内容。
+
+#### Mermaid图
+
+```mermaid
+graph TD
+    A[开始] --> B[处理]
+    B --> C[结束]
+```

@@ -12,6 +12,7 @@ import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
+import mermaid from 'mermaid';
 
 /**
  * 判断两个 URL 是否指向同一页面（忽略查询参数和锚点）
@@ -94,7 +95,39 @@ const highlighterPromise = createHighlighter({
 });
 
 /**
- * 使用 Shiki 渲染代码块的组件
+ * 使用 Mermaid 渲染图表代码块的组件
+ */
+function MermaidChart({ children }) {
+    const containerRef = useRef(null);
+    const [html, setHtml] = useState(null);
+    const [error, setError] = useState(null);
+    // 生成稳定且合法的唯一 ID
+    const id = useMemo(() => `mermaid-${Math.random().toString(36).substr(2, 9)}`, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const { svg } = await mermaid.render(id, String(children));
+                if (!cancelled) setHtml(svg);
+            } catch (err) {
+                if (!cancelled) setError(err.message);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [children, id]);
+
+    if (error) {
+        return <pre style={{ color: 'red', padding: '10px', background: '#fdd' }}>Mermaid 渲染失败: {error}<br/>{children}</pre>;
+    }
+    if (!html) {
+        return <div style={{ padding: '10px', textAlign: 'center', color: '#999' }}>加载 Mermaid 图表中…</div>;
+    }
+    return <div ref={containerRef} style={{ textAlign: 'center', margin: '16px 0', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/**
+ * 使用 Shiki 渲染代码块的组件（含 Mermaid 图表支持）
  */
 function CodeBlock({ children, className }) {
     const inline = !String(children).includes('\n');
@@ -114,6 +147,12 @@ function CodeBlock({ children, className }) {
     if (inline) {
         return <code className={className} style={codeStyle}>{children}</code>;
     }
+
+    // Mermaid 图表：使用专门的渲染组件
+    if (language === 'mermaid') {
+        return <MermaidChart>{children}</MermaidChart>;
+    }
+
     useEffect(() => {
         let cancelled = false;
         (async () => {
@@ -163,12 +202,12 @@ function PostPage({ post, tagsMap = {} }) {
     const backgroundRef = useRef(null);
     const [affixOffset, setAffixOffset] = useState(0);
     const [renderedMarkdown,setRenderedMarkdown] =useState(<ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={{
-        h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine/></>,
-        h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine/></>,
-        h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine/></>,
-        h4:({node, ...props}) => <><Text type={"h4"} {...props}/><NextLine/></>,
-        h5:({node, ...props}) => <><Text type={"h5"} {...props}/><NextLine/></>,
-        h6:({node, ...props}) => <><Text type={"h6"} {...props}/><NextLine/></>,
+        h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine size='0px'/></>,
+        h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine size='0px'/></>,
+        h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine size='0px'/></>,
+        h4:({node, ...props}) => <><Text type={"h4"} {...props}/><NextLine size='0px'/></>,
+        h5:({node, ...props}) => <><Text type={"h5"} {...props}/><NextLine size='0px'/></>,
+        h6:({node, ...props}) => <><Text type={"h6"} {...props}/><NextLine size='0px'/></>,
         a:({node, ...props}) => <><a href={props.href} target={is_same_page(props.href,window?.location?.href)?"_self":"_blank"}><Text link>{props.children}</Text></a></>,
         p:({node, ...props}) => <Paragraph {...props}/>,
         strong:({node, ...props}) => <Text bold {...props}></Text>,
