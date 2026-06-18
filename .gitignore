@@ -30,5 +30,8 @@ src/media/common/bootstrap-icons-Split/
 src/media/common/bootstrap-icons.woff2
 src/media/common/LXGWWenkai-Regular.ttf
 
+# Export
+src/data/export
+
 # SSR
 .ssr-cache/
