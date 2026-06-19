@@ -8,7 +8,7 @@ import 'katex/dist/katex.min.css';
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
-import { Affix, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, theme as antdTheme } from "antd";
+import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
@@ -107,7 +107,6 @@ function MermaidChart({ children }) {
     const containerRef = useRef(null);
     const [html, setHtml] = useState(null);
     const [error, setError] = useState(null);
-    // 生成稳定且合法的唯一 ID
     const id = useMemo(() => `mermaid-${Math.random().toString(36).substr(2, 9)}`, []);
 
     useEffect(() => {
@@ -123,13 +122,48 @@ function MermaidChart({ children }) {
         return () => { cancelled = true; };
     }, [children, id]);
 
+    // 导出 Mermaid 图表为 PNG 图片
+    const exportAsImg = useCallback(async () => {
+        const target = containerRef.current;
+        if (!target) return;
+        try {
+            const canvas = await html2canvas(target, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+            });
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = `mermaid-${id}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(downloadUrl);
+                }
+            }, 'image/png');
+        } catch (err) {
+            console.error('导出 Mermaid 图片失败:', err);
+        }
+    }, [id]);
+
     if (error) {
         return <pre style={{ color: 'red', padding: '10px', background: '#fdd' }}>Mermaid 渲染失败: {error}<br/>{children}</pre>;
     }
     if (!html) {
         return <div style={{ padding: '10px', textAlign: 'center', color: '#999' }}>加载 Mermaid 图表中…</div>;
     }
-    return <div ref={containerRef} style={{ textAlign: 'center', margin: '16px 0', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: html }} />;
+    return (
+        <Flex vertical style={{ position: 'relative', margin: '16px 0' }}>
+            <div ref={containerRef} style={{ textAlign: 'center', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: html }} />
+            <Flex justify="end" style={{ position: 'absolute', bottom: 8, right: 8 }}>
+                <Button size="small" onClick={exportAsImg}>导出为图片</Button>
+            </Flex>
+        </Flex>
+    );
 }
 
 /**
