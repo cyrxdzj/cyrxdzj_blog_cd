@@ -5,11 +5,11 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
-import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
 import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
+import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
 import card_002_035_normal from "../media/background/card_002_035_normal.webp";
 import MainLogo from "../media/common/main_logo.png";
@@ -403,6 +403,7 @@ function PostPage({ post, tagsMap = {} }) {
                                     <NextLine/>
                                     <Flex justify="space-between" align="flex-start">
                                         <Flex vertical>
+                                            <Text>{post?.editTimeStr ? formatTimestamp(new Date(post.editTimeStr).getTime()) : ''}</Text>
                                             <Text>{post?.length} 字</Text>
                                         </Flex>
                                         {post?.tags && post.tags.length > 0 && (

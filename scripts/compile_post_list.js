@@ -3,6 +3,7 @@ const fs = require("fs");
 const yaml = require("js-yaml");
 const { OpenAI } = require("openai");
 const config = require("./config");
+const { execSync } = require('child_process');
 
 let openai = null;
 let hasCredentials = false;
@@ -99,6 +100,16 @@ if (!indexData || !Array.isArray(indexData.posts)) {
                 // 如果之前存在，则保持不变
             }
         }
+
+        // 获取 Git 最后提交时间
+        let editTimeStr = "";
+        try {
+            const gitLogOutput = execSync(`git log -1 --format="%ci" -- "${mdPath}"`, { encoding: "utf8" });
+            editTimeStr = gitLogOutput.trim();
+        } catch (err) {
+            console.warn(`无法获取 Git 最后提交时间 (${id}): ${err.message}`);
+        }
+        post.editTimeStr = editTimeStr;
 
         // 更新字数
         post.length = content.length;
