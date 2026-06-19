@@ -1,38 +1,16 @@
 const fs = require('fs');
 const path = require('path');
-
+const data_dir="src/data/";
 class SsrPlugin {
-    /**
-     * @param {Object} options
-     * @param {string} options.ssrBundle - SSR bundle 的绝对路径
-     * @param {string[]} options.pageNames - 需要 SSR 的页面名称列表
-     * @param {string[]} options.staticPageNames - 静态页面名称列表（不含 post）
-     * @param {Object} [options.ssrPostData] - 每个 post 页面的数据：{ [pageName]: { ...post,markdown } }
-     * @param {Object} [options.tagsMap] - tag列表
-     */
     constructor(options) {
-        this.ssrBundle = options.ssrBundle;
         this.pageNames = options.pageNames;
         this.staticPageNames = options.staticPageNames || [];
-        this.ssrPostData = options.ssrPostData || {};
-        this.tagsMap = options.tagsMap || {};
         this.indexData = options.indexData || {};
     }
 
     apply(compiler) {
         compiler.hooks.afterEmit.tapAsync('SsrPlugin', (compilation, callback) => {
             if (compiler.options.mode !== 'production') {
-                callback();
-                return;
-            }
-
-            let ssrModule;
-            try {
-                delete require.cache[this.ssrBundle];
-                ssrModule = require(this.ssrBundle);
-            } catch (err) {
-                console.error('[SsrPlugin] Failed to load SSR bundle:', err.message);
-                console.log(err);
                 callback();
                 return;
             }
@@ -59,21 +37,22 @@ class SsrPlugin {
                 let html = fs.readFileSync(htmlPath, 'utf-8');
 
                 try {
-                    const isStatic = this.staticPageNames.includes(name);
-                    let props;
-                    if (isStatic) {
-                        props = { index_yaml: this.indexData, tagsMap: this.tagsMap };
-                    } else {
-                        props = this.ssrPostData[name] || null;
+                    let appString="";
+                    if(isPost)
+                    {
+                        const mdPath = path.join(data_dir, `posts/${name.replace("post_","")}.md`);
+                        if (fs.existsSync(mdPath)) {
+                            appString = fs.readFileSync(mdPath, 'utf-8');
+                        } else {
+                            console.warn(`[SsrPlugin] Markdown not found: ${mdPath}`);
+                        }
                     }
-                    const appString = ssrModule.renderPage(name, props, this.tagsMap);
 
                     // SSR 渲染的组件替换占位符
                     html = html.replace('<div id="ssr"></div>', appString);
 
                     fs.writeFileSync(htmlPath, html, 'utf-8');
-                    const renderedId = isStatic ? this.ssrPostData[name]?.id : name;
-                    console.log(`[SsrPlugin] SSR rendered: ${isPost ? 'post/' + (renderedId || name) : name}.html`);
+                    console.log(`[SsrPlugin] SSR rendered: ${name}.html`);
                 } catch (err) {
                     console.error(`[SsrPlugin] Error rendering ${name}:`, err.message);
                     console.log(err);

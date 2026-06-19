@@ -166,11 +166,8 @@ module.exports = [
         ].concat(isDev?[]:[
             // SSR 注入插件 — 传入 post 数据
             new SsrPlugin({
-                ssrBundle: path.resolve(__dirname, '.ssr-cache', 'ssr-bundle.js'),
                 pageNames: allPages.map(p => p.name),
                 staticPageNames: staticPages.map(p => p.name),
-                ssrPostData,
-                tagsMap,
                 indexData,
             }),]),
         devServer: {
@@ -221,58 +218,4 @@ module.exports = [
             },
         },
     },
-].concat(isDev?[]:[
-    // ===== 配置 2：SSR Bundle（Node 环境）=====
-    {
-        target: 'node',
-        entry: ['./src/ssr-polyfill.js', './src/ssr-entry.js'],
-        output: {
-            path: path.resolve(__dirname, '.ssr-cache'),
-            filename: 'ssr-bundle.js',
-            libraryTarget: 'commonjs2',
-            clean: true,
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.jsx?$/,
-                    exclude: /node_modules/,
-                    use: [
-                        {
-                            loader: 'thread-loader',
-                            options: {
-                                workers: 2,
-                            },
-                        },
-                        {
-                            loader: 'babel-loader',
-                            options: {
-                                presets: ['@babel/preset-env', '@babel/preset-react'],
-                                cacheDirectory: true,
-                                cacheCompression: false,
-                            },
-                        },
-                    ],
-                },
-                {
-                    test: /\.css$/,
-                    use: 'null-loader',
-                },
-                {
-                    test: /\.(png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot)$/,
-                    use: 'null-loader',
-                },
-            ],
-        },
-        resolve: {
-            extensions: ['.js', '.jsx'],
-        },
-        plugins: [
-            new WebpackBar({
-                name: 'SSR Build',
-                color: '#000088',
-            }),
-        ],
-        mode: 'production',
-    }
-]);
+];

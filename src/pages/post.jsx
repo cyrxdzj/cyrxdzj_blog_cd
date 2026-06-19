@@ -403,7 +403,6 @@ function PostPage({ post, tagsMap = {} }) {
                                     <NextLine/>
                                     <Flex justify="space-between" align="flex-start">
                                         <Flex vertical>
-                                            <Text>{formatTimestamp(post?.editTimeStr)}</Text>
                                             <Text>{post?.length} 字</Text>
                                         </Flex>
                                         {post?.tags && post.tags.length > 0 && (
@@ -429,7 +428,6 @@ function PostPage({ post, tagsMap = {} }) {
                 <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
                     <Flex vertical>
                         <Text type="h1">{post?.title}</Text>
-                        <Text>{"编辑于："}{formatTimestamp(post?.editTimeStr)}</Text>
                     </Flex>
                     {post?.logo_url && <Image src={post.logo_url} style={{ height: 50, width: 'auto' }} />}
                 </Flex>

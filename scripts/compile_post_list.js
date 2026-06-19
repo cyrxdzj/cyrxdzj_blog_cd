@@ -64,21 +64,10 @@ if (!indexData || !Array.isArray(indexData.posts)) {
             continue;
         }
 
-        // 是否需要生成摘要：没有 summary，或文件修改时间晚于已记录的 editTimeStr
+        // 是否需要生成摘要：没有 summary
         let needSummary = false;
         if (!post.summary) {
             needSummary = true;
-        } else {
-            const oldEditTime = post.editTimeStr;
-            if (oldEditTime === undefined) {
-                needSummary = true;
-            } else {
-                // 尝试将 oldEditTime 转为 Date（兼容字符串格式的旧数据）
-                const oldDate = oldEditTime instanceof Date ? oldEditTime : new Date(oldEditTime);
-                if (!isNaN(oldDate.getTime()) && stat.mtime > oldDate) {
-                    needSummary = true;
-                }
-            }
         }
 
         // 读取 Markdown 内容
@@ -111,8 +100,7 @@ if (!indexData || !Array.isArray(indexData.posts)) {
             }
         }
 
-        // 更新修改时间和字数
-        post.editTimeStr = stat.mtime;
+        // 更新字数
         post.length = content.length;
     }
 

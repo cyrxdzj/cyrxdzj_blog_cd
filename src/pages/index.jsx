@@ -125,7 +125,6 @@ function IndexPage(props) {
                                                 <Text>{post.summary}</Text>
                                             </Flex>
                                             <Flex vertical align="flex-end" style={{ whiteSpace: "nowrap" }}>
-                                                <Text>{formatTimestamp(post.editTimeStr)}</Text>
                                                 <Text>{post.length} 字</Text>
                                                 {post.tags && post.tags.length > 0 && (
                                                     <Flex gap={8} wrap style={{ justifyContent: "flex-end", marginTop: 8 }}>
