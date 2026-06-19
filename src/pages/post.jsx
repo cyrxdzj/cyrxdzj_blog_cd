@@ -7,7 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
-import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, theme as antdTheme } from "antd";
+import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, Tooltip, Tree, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
@@ -33,6 +33,133 @@ function is_same_page(url1, url2) {
     const norm2 = normalize(url2);
     if (!norm1 || !norm2) return true;
     return norm1 === norm2;
+}
+
+/**
+ * 将文本转换为 URL 友好的 ID（用于标题锚点）
+ */
+function slugify(text) {
+    return String(text)
+        .toLowerCase()
+        .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        || 'heading';
+}
+
+/**
+ * 从 React children 中提取纯文本
+ */
+function extractTextFromChildren(children) {
+    if (typeof children === 'string') return children;
+    if (Array.isArray(children)) return children.map(c => typeof c === 'string' ? c : extractTextFromChildren(c)).join('');
+    if (children?.props?.children) return extractTextFromChildren(children.props.children);
+    return '';
+}
+
+/**
+ * 从 Markdown 原文中提取所有标题（用于构建目录树）
+ * @param {string} markdown - Markdown 原文
+ * @returns {{level:number, text:string, id:string}[]}
+ */
+function extractHeadings(markdown) {
+    if (!markdown) return [];
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    const headings = [];
+    const idCounter = {};
+    let match;
+    while ((match = headingRegex.exec(markdown)) !== null) {
+        const level = match[1].length;
+        const text = match[2].trim();
+        let id = slugify(text);
+        if (idCounter[id] !== undefined) {
+            idCounter[id]++;
+            id = 'heading-' + id + '-' + idCounter[id];
+        } else {
+            idCounter[id] = 0;
+            id = 'heading-' + id;
+        }
+        headings.push({ level, text, id });
+    }
+    return headings;
+}
+
+/**
+ * 将扁平的标题列表转换为 Ant Design Tree 所需的嵌套树结构
+ * @param {{level:number, text:string, id:string}[]} headings
+ * @returns {{title:string, key:string, children:[]}[]}
+ */
+function buildTreeData(headings) {
+    const root = { title: 'root', key: 'root', children: [] };
+    const stack = [{ level: 0, node: root }];
+
+    for (const h of headings) {
+        const newNode = {
+            title: h.text,
+            key: h.id,
+        };
+
+        while (stack.length > 1 && stack[stack.length - 1].level >= h.level) {
+            stack.pop();
+        }
+
+        if (!stack[stack.length - 1].node.children) {
+            stack[stack.length - 1].node.children = [];
+        }
+        stack[stack.length - 1].node.children.push(newNode);
+        stack.push({ level: h.level, node: newNode });
+    }
+
+    return root.children;
+}
+
+/**
+ * 创建 ReactMarkdown 标题渲染组件映射，每个标题都带有唯一 id 属性
+ * 用于在生成 DOM 元素时注入 id，以便目录树可以通过 id 定位并滚动到对应位置
+ */
+function createHeadingRenderers(colorPrimary, notificationAPI) {
+    const counters = {};
+    const renderers = {};
+    for (let level = 1; level <= 6; level++) {
+        const type = 'h' + level;
+        renderers[type] = function HeadingRenderer({ node, ...props }) {
+            const [isHovered, setIsHovered] = useState(false);
+            const idRef = useRef(null);
+            if (idRef.current === null) {
+                const text = extractTextFromChildren(props.children);
+                const baseId = slugify(text);
+                if (counters[baseId] === undefined) {
+                    counters[baseId] = 0;
+                } else {
+                    counters[baseId]++;
+                }
+                idRef.current = counters[baseId] === 0 ? 'heading-' + baseId : 'heading-' + baseId + '-' + counters[baseId];
+            }
+            const id = idRef.current;
+            return (
+                <>
+                    <div id={id}>
+                        <Tooltip title="复制链接">
+                            <Text
+                                type={type}
+                                {...props}
+                                custom_style={{ cursor: 'pointer', color: isHovered ? colorPrimary : undefined, transition: 'color 0.5s' }}
+                                onClick={() => {
+                                    const url = window.location.href.split('#')[0] + '#' + id;
+                                    navigator.clipboard.writeText(url).then(() => {
+                                        notificationAPI.success({ message: '复制成功', placement: 'topLeft' });
+                                    }).catch(() => {});
+                                }}
+                                onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
+                            />
+                        </Tooltip>
+                    </div>
+                    <NextLine size='0px' />
+                </>
+            );
+        };
+    }
+    return renderers;
 }
 
 /**
@@ -273,12 +400,7 @@ function PostPage({ post, tagsMap = {} }) {
     useEffect(() => {
         setRenderedMarkdown(<ConfigProvider theme={AntdConfigProvider_light}>
             <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]} components={{
-                h1:({node, ...props}) => <><Text type={"h1"} {...props}/><NextLine size='0px'/></>,
-                h2:({node, ...props}) => <><Text type={"h2"} {...props}/><NextLine size='0px'/></>,
-                h3:({node, ...props}) => <><Text type={"h3"} {...props}/><NextLine size='0px'/></>,
-                h4:({node, ...props}) => <><Text type={"h4"} {...props}/><NextLine size='0px'/></>,
-                h5:({node, ...props}) => <><Text type={"h5"} {...props}/><NextLine size='0px'/></>,
-                h6:({node, ...props}) => <><Text type={"h6"} {...props}/><NextLine size='0px'/></>,
+                ...createHeadingRenderers("#000088", notificationAPI),
                 a:({node, ...props}) => <><a href={props.href} target={is_same_page(props.href,window?.location?.href)?"_self":"_blank"}><Text link>{props.children}</Text></a></>,
                 p:({node, ...props}) => <Paragraph {...props}/>,
                 strong:({node, ...props}) => <Text bold {...props}></Text>,
@@ -366,6 +488,41 @@ function PostPage({ post, tagsMap = {} }) {
         }
     }, []);
 
+    // 从 Markdown 原文中提取标题，构建目录树数据
+    const headingsData = useMemo(() => extractHeadings(markdownContent), [markdownContent]);
+    const treeData = useMemo(() => buildTreeData(headingsData), [headingsData]);
+    // 点击目录树节点时滚动到对应标题（考虑 affixOffset 避免被顶部元素遮挡）
+    const handleTreeSelect = useCallback((selectedKeys) => {
+        if (selectedKeys.length > 0) {
+            const el = document.getElementById(selectedKeys[0]);
+            const container = backgroundRef.current;
+            if (el && container) {
+                const containerRect = container.getBoundingClientRect();
+                const elRect = el.getBoundingClientRect();
+                const top = elRect.top - containerRect.top + container.scrollTop - affixOffset;
+                container.scrollTo({ top, behavior: 'smooth' });
+            }
+        }
+    }, [affixOffset]);
+
+    // 页面加载时，如果 URL 包含 #xxx，则滚动到对应标题
+    useEffect(() => {
+        if (!renderedMarkdown) return;
+        const hash = window.location.hash;
+        if (!hash) return;
+        const id = decodeURIComponent(hash.replace('#', ''));
+        requestAnimationFrame(() => {
+            const el = document.getElementById(id);
+            const container = backgroundRef.current;
+            if (el && container) {
+                const containerRect = container.getBoundingClientRect();
+                const elRect = el.getBoundingClientRect();
+                const top = elRect.top - containerRect.top + container.scrollTop - affixOffset;
+                container.scrollTo({ top, behavior: 'smooth' });
+            }
+        });
+    }, [renderedMarkdown]);
+
     return (
         <ConfigProvider theme={AntdConfigProvider_light}>
             {contextHolder}
@@ -393,32 +550,44 @@ function PostPage({ post, tagsMap = {} }) {
                 ref={backgroundRef}
             >
                 <Row gutter={[8, 16]}>
-                    <Col span={8}>
-                        <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
-                            <Spin spinning={isExporting} tip="正在生成PDF">
-                                <Card ref={cardRef}>
-                                    <Flex justify="center">
-                                        <Text type={"h1"}>{post?.title}</Text>
+                    <Col span={6}>
+                        <Spin spinning={isExporting} tip="正在生成PDF">
+                            <Card ref={cardRef}>
+                                <Flex justify="center">
+                                    <Text type={"h3"}>{post?.title}</Text>
+                                </Flex>
+                                <NextLine/>
+                                <Flex justify="space-between" align="flex-start">
+                                    <Flex vertical>
+                                        <Text>{post?.editTimeStr ? formatTimestamp(new Date(post.editTimeStr).getTime()) : ''}</Text>
+                                        <Text>{post?.length} 字</Text>
                                     </Flex>
-                                    <NextLine/>
-                                    <Flex justify="space-between" align="flex-start">
-                                        <Flex vertical>
-                                            <Text>{post?.editTimeStr ? formatTimestamp(new Date(post.editTimeStr).getTime()) : ''}</Text>
-                                            <Text>{post?.length} 字</Text>
+                                    {post?.tags && post.tags.length > 0 && (
+                                        <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
+                                            {post.tags.map(tagId => (
+                                                <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
+                                            ))}
                                         </Flex>
-                                        {post?.tags && post.tags.length > 0 && (
-                                            <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
-                                                {post.tags.map(tagId => (
-                                                    <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
-                                                ))}
-                                            </Flex>
-                                        )}
-                                    </Flex>
+                                    )}
+                                </Flex>
+                            </Card>
+                        </Spin>
+                        {treeData.length > 0 && (<>
+                            <NextLine/>
+                            <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
+                                <Card>
+                                    <Text type="h3">目录</Text>
+                                    <Tree
+                                        treeData={treeData}
+                                        onSelect={handleTreeSelect}
+                                        defaultExpandAll
+                                        style={{ marginTop: 8 }}
+                                    />
                                 </Card>
-                            </Spin>
-                        </Affix>
+                            </Affix></>
+                        )}
                     </Col>
-                    <Col span={16}>
+                    <Col span={18}>
                             <Card>
                                 {renderedMarkdown}
                             </Card>
