@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
 const SsrPlugin = require('./plugins/SsrPlugin');
+const SitmapBuilder = require('./plugins/SitmapBuilder');
 const isDev = process.env.BUILD_MODE === 'development';
 
 // 读取博文列表
@@ -169,6 +170,9 @@ module.exports = [
                 pageNames: allPages.map(p => p.name),
                 staticPageNames: staticPages.map(p => p.name),
                 indexData,
+            }),
+            new SitmapBuilder({
+                siteUrl: 'https://blog.cyrxdzj.eu.org',
             }),]),
         devServer: {
             port: 3000,

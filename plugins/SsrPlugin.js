@@ -40,11 +40,17 @@ class SsrPlugin {
                     let appString="";
                     if(isPost)
                     {
-                        const mdPath = path.join(data_dir, `posts/${name.replace("post_","")}.md`);
+                        const postId = name.replace('post_', '');
+                        const mdPath = path.join(data_dir, `posts/${postId}.md`);
                         if (fs.existsSync(mdPath)) {
                             appString = fs.readFileSync(mdPath, 'utf-8');
                         } else {
                             console.warn(`[SsrPlugin] Markdown not found: ${mdPath}`);
+                        }
+
+                        const post = (this.indexData.posts || []).find(p => p.id === postId);
+                        if (post && post.summary) {
+                            html = html.replace('</title>', `</title>\n    <meta name="description" content="${post.summary.replace(/"/g, '&quot;')}" />`);
                         }
                     }
 
