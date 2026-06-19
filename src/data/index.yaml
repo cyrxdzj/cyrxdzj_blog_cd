@@ -10,11 +10,37 @@ posts:
     title: 洛谷P5608 [Ynoi2013]文化课 题解
     tags:
       - oi
-    summary: 这篇文章详细讲解了一道线段树黑题的解题思路，包括处理运算符和数值修改，并通过数组、缓存幂运算等优化技巧最终获得满分。
     editTimeStr: 2026-06-19T05:57:05.154Z
     length: 4442
+    summary: 这篇文章详细讲解了如何用线段树维护带加法和乘法优先级的不带括号表达式，逐步解决修改运算符、修改数值以及空间时间优化，最终通过结构体内函数和缓存幂等方法成功通过黑题。
+  - id: TYOI20260820-01-LCAByDoubling
+    title: 算法讲解：倍增法求最近公共祖先
+    tags:
+      - oi
+      - oi-lesson
+    editTimeStr: 2026-06-19T02:02:31.352Z
+    length: 2240
+    summary: 本文介绍了最近公共祖先（LCA）的概念，详细讲解了朴素算法及其优化——倍增法（预处理O(n log n)、查询O(log n)），并提到了更快的DFS序+ST表方法。
+  - id: TYOI20260820-02-DiffOnTree
+    title: 算法讲解：树上差分
+    tags:
+      - oi
+      - oi-lesson
+    summary: 本文介绍了树上差分算法，通过仅在路径端点、LCA及LCA父亲处进行加减操作，最后DFS统计子树和，高效解决路径计数问题。
+    editTimeStr: 2026-06-19T01:57:05.888Z
+    length: 1493
+  - id: TYOI20260821-02-SegTreeMerge
+    title: 算法讲解：线段树合并
+    tags:
+      - oi
+      - oi-lesson
+    summary: 文章介绍了线段树合并的概念、条件、递归合并算法（处理节点存在情况并更新信息）及其时间复杂度O(n log n)，并给出了关键代码示例。
+    editTimeStr: 2026-06-19T05:24:23.600Z
+    length: 1630
 tags:
   welcome:
     name: 欢迎
   oi:
     name: OI
+  oi-lesson:
+    name: OI集训课程
