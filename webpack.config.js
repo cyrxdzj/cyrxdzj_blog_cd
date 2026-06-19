@@ -79,12 +79,22 @@ module.exports = [
                 {
                     test: /\.jsx?$/,
                     exclude: /node_modules/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react'],
+                    use: [
+                        {
+                            loader: 'thread-loader',
+                            options: {
+                                workers: 6,
+                            },
                         },
-                    },
+                        {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: ['@babel/preset-env', '@babel/preset-react'],
+                                cacheDirectory: true,
+                                cacheCompression: false,
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.css$/,
@@ -193,6 +203,23 @@ module.exports = [
             extensions: ['.js', '.jsx'],
         },
         mode: 'development',
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                        priority: -10,
+                        reuseExistingChunk: true,
+                    },
+                    default: {
+                        minChunks: 2,
+                        priority: -20,
+                        reuseExistingChunk: true,
+                    },
+                },
+            },
+        },
     },
 ].concat(isDev?[]:[
     // ===== 配置 2：SSR Bundle（Node 环境）=====
@@ -210,12 +237,22 @@ module.exports = [
                 {
                     test: /\.jsx?$/,
                     exclude: /node_modules/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react'],
+                    use: [
+                        {
+                            loader: 'thread-loader',
+                            options: {
+                                workers: 2,
+                            },
                         },
-                    },
+                        {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: ['@babel/preset-env', '@babel/preset-react'],
+                                cacheDirectory: true,
+                                cacheCompression: false,
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.css$/,
