@@ -16,6 +16,7 @@ import MainLogo from "../media/common/main_logo.png";
 import mermaid from 'mermaid';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 
 // 判断是否处于开发模式（localhost:3000）
 const isDev = typeof window !== 'undefined' && window.location.port === '3000';
@@ -361,7 +362,7 @@ function CodeBlock({ children, className }) {
 }
 
 // 博文详情页组件，接收 post 对象（含 id, title, markdown）
-function PostPage({ post, tagsMap = {} }) {
+function PostPage({ post, indexData = { tags: {} } }) {
     document.title=`${post?.title} - cyrxdzj的博客`
     const [notificationAPI, contextHolder] = notification.useNotification();
     const { token } = antdTheme.useToken();
@@ -505,6 +506,26 @@ function PostPage({ post, tagsMap = {} }) {
         }
     }, [affixOffset]);
 
+    // 对于当前文章每个 starred 标签，分别计算该标签下上一篇和下一篇
+    const starTagNavData = useMemo(() => {
+        if (!post?.tags || !indexData?.tags || !indexData?.posts) return [];
+        const starredTagIds = post.tags.filter(tagId => indexData.tags[tagId]?.starred);
+        if (starredTagIds.length === 0) return [];
+        return starredTagIds.map(tagId => {
+            const tagData = indexData.tags[tagId];
+            const postsInTag = indexData.posts
+                .map((p, idx) => ({ ...p, _origIndex: idx }))
+                .filter(p => p.tags?.includes(tagId));
+            const curIdx = postsInTag.findIndex(p => p.id === post.id);
+            return {
+                key: tagId,
+                tagName: tagData.name,
+                prevPost: curIdx > 0 ? postsInTag[curIdx - 1] : null,
+                nextPost: curIdx >= 0 && curIdx < postsInTag.length - 1 ? postsInTag[curIdx + 1] : null,
+            };
+        });
+    }, [post?.tags, post?.id, indexData?.tags, indexData?.posts]);
+
     // 页面加载时，如果 URL 包含 #xxx，则滚动到对应标题
     useEffect(() => {
         if (!renderedMarkdown) return;
@@ -565,7 +586,7 @@ function PostPage({ post, tagsMap = {} }) {
                                     {post?.tags && post.tags.length > 0 && (
                                         <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
                                             {post.tags.map(tagId => (
-                                                <Tag key={tagId} color={AntdConfigProvider_light.token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
+                                                <Tag key={tagId} color={AntdConfigProvider_light.token.colorPrimary} variant='solid'>{indexData.tags[tagId].name}</Tag>
                                             ))}
                                         </Flex>
                                     )}
@@ -591,6 +612,89 @@ function PostPage({ post, tagsMap = {} }) {
                             <Card>
                                 {renderedMarkdown}
                             </Card>
+                            {starTagNavData.length > 0 && (<>
+                                <NextLine/>
+                                {starTagNavData.map(item => (
+                                    <React.Fragment key={item.key}>
+                                        <Row gutter={16} gutter={[8,16]}>
+                                            <Col span={24}>
+                                                <Card>
+                                                    <Flex justify='center'><Text type="h3">{item.tagName}</Text></Flex>
+                                                </Card>
+                                            </Col>
+                                            <Col span={12}>
+                                                {item.prevPost ? (
+                                                    <a href={`/post/${item.prevPost.id}`}>
+                                                        <Card>
+                                                            <Flex justify="space-between" align="flex-start">
+                                                                <Flex vertical flex={1}>
+                                                                    <Text type={"h3"}>{item.prevPost.title}</Text>
+                                                                    <Text>{item.prevPost.summary}</Text>
+                                                                </Flex>
+                                                                <Flex vertical align="flex-end" style={{ whiteSpace: "nowrap" }}>
+                                                                    <Text>{item.prevPost?.editTimeStr ? formatTimestamp(new Date(item.prevPost.editTimeStr).getTime()) : ''}</Text>
+                                                                    <Text>{item.prevPost.length} 字</Text>
+                                                                    {item.prevPost.tags && item.prevPost.tags.length > 0 && (
+                                                                        <Flex gap={8} wrap style={{ justifyContent: "flex-end", marginTop: 8 }}>
+                                                                            {item.prevPost.tags.map(tagId => (
+                                                                                <Tag key={tagId} color={AntdConfigProvider_light.token.colorPrimary} variant="solid">{indexData.tags[tagId]?.name}</Tag>
+                                                                            ))}
+                                                                        </Flex>
+                                                                    )}
+                                                                    <Flex gap={8} wrap style={{marginTop:8}}>
+                                                                        <Tag color={AntdConfigProvider_light.token.colorSuccess} variant="solid"><ArrowLeftOutlined/>上一篇</Tag>
+                                                                    </Flex>
+                                                                </Flex>
+                                                            </Flex>
+                                                        </Card>
+                                                    </a>
+                                                ) : (
+                                                    <Card style={{ opacity: 0.4 }}>
+                                                        <Flex justify="center" align="center" style={{ height: '100%', minHeight: 80 }}>
+                                                            <Text type="secondary">已是第一篇</Text>
+                                                        </Flex>
+                                                    </Card>
+                                                )}
+                                            </Col>
+                                            <Col span={12}>
+                                                {item.nextPost ? (
+                                                    <a href={`/post/${item.nextPost.id}`}>
+                                                        <Card>
+                                                            <Flex justify="space-between" align="flex-start">
+                                                                <Flex vertical flex={1}>
+                                                                    <Text type={"h3"}>{item.nextPost.title}</Text>
+                                                                    <Text>{item.nextPost.summary}</Text>
+                                                                </Flex>
+                                                                <Flex vertical align="flex-end" style={{ whiteSpace: "nowrap" }}>
+                                                                    <Text>{item.nextPost?.editTimeStr ? formatTimestamp(new Date(item.nextPost.editTimeStr).getTime()) : ''}</Text>
+                                                                    <Text>{item.nextPost.length} 字</Text>
+                                                                    {item.nextPost.tags && item.nextPost.tags.length > 0 && (
+                                                                        <Flex gap={8} wrap style={{ justifyContent: "flex-end", marginTop: 8 }}>
+                                                                            {item.nextPost.tags.map(tagId => (
+                                                                                <Tag key={tagId} color={AntdConfigProvider_light.token.colorPrimary} variant="solid">{indexData.tags[tagId]?.name}</Tag>
+                                                                            ))}
+                                                                        </Flex>
+                                                                    )}
+                                                                    <Flex gap={8} wrap style={{marginTop:8}}>
+                                                                        <Tag color={AntdConfigProvider_light.token.colorSuccess} variant="solid"><ArrowRightOutlined/>下一篇</Tag>
+                                                                    </Flex>
+                                                                </Flex>
+                                                            </Flex>
+                                                        </Card>
+                                                    </a>
+                                                ) : (
+                                                    <Card style={{ opacity: 0.4 }}>
+                                                        <Flex justify="center" align="center" style={{ height: '100%', minHeight: 80 }}>
+                                                            <Text type="secondary">已是最后一篇</Text>
+                                                        </Flex>
+                                                    </Card>
+                                                )}
+                                            </Col>
+                                        </Row>
+                                        <NextLine/>
+                                    </React.Fragment>
+                                ))}
+                            </>)}
                     </Col>
                 </Row>
             </Background>

@@ -51,8 +51,6 @@ postPages.forEach(p => {
     };
 });
 
-// tags 映射，供 post 页面使用
-const tagsMap = indexData.tags || {};
 module.exports = [
     // ===== 配置 1：前端 Bundle（Browser 环境）=====
     {
@@ -157,7 +155,7 @@ module.exports = [
                         ...page,  // 包含 id, title, name 等所有 index.yaml 字段
                         markdown,
                     };
-                    const dataScript = `<script>window.__INITIAL_STATE__ = ${JSON.stringify({ post: postData, tagsMap: tagsMap })};</script>`;
+                    const dataScript = `<script>window.__INITIAL_STATE__ = ${JSON.stringify({ post: postData, indexData: indexData })};</script>`;
                     return {
                         postDataScript: dataScript,
                         documentTitle: `${page.title} - cyrxdzj的博客`,

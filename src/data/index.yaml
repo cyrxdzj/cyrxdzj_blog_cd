@@ -44,3 +44,4 @@ tags:
     name: OI
   oi-lesson:
     name: OI集训课程
+    starred: true
