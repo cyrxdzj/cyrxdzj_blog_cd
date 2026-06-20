@@ -400,7 +400,7 @@ function PostPage({ post, tagsMap = {} }) {
     useEffect(() => {
         setRenderedMarkdown(<ConfigProvider theme={AntdConfigProvider_light}>
             <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]} components={{
-                ...createHeadingRenderers("#000088", notificationAPI),
+                ...createHeadingRenderers(AntdConfigProvider_light.token.colorPrimary, notificationAPI),
                 a:({node, ...props}) => <><a href={props.href} target={is_same_page(props.href,window?.location?.href)?"_self":"_blank"}><Text link>{props.children}</Text></a></>,
                 p:({node, ...props}) => <Paragraph {...props}/>,
                 strong:({node, ...props}) => <Text bold {...props}></Text>,
@@ -565,7 +565,7 @@ function PostPage({ post, tagsMap = {} }) {
                                     {post?.tags && post.tags.length > 0 && (
                                         <Flex gap={4} wrap style={{ justifyContent: "flex-end" }}>
                                             {post.tags.map(tagId => (
-                                                <Tag key={tagId} color={token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
+                                                <Tag key={tagId} color={AntdConfigProvider_light.token.colorPrimary} variant='solid'>{tagsMap[tagId].name}</Tag>
                                             ))}
                                         </Flex>
                                     )}

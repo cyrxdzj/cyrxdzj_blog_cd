@@ -197,7 +197,7 @@ function IndexPage(props) {
                                             {Object.entries(props.index_yaml.tags).map(([tagId, tagData]) => (
                                                 <Tag
                                                     key={tagId}
-                                                    color={selectedTags.includes(tagId) ? token.colorPrimary : token.colorPrimary}
+                                                    color={AntdConfigProvider_light.token.colorPrimary}
                                                     variant={selectedTags.includes(tagId) ?"solid":"filled"}
                                                     onClick={() => handleTagClick(tagId)}
                                                 >
@@ -250,7 +250,7 @@ function IndexPage(props) {
                                                         {post.tags.map(tagId => (
                                                             <Tag
                                                                 key={tagId}
-                                                                color={token.colorPrimary}
+                                                                color={AntdConfigProvider_light.token.colorPrimary}
                                                                 variant="solid"
                                                                 onClick={(e) => handleTagFromPostClick(tagId, e)}
                                                                 style={{ cursor: "pointer" }}
