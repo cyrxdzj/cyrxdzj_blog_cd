@@ -561,10 +561,10 @@ function PostPage({ post, indexData = { tags: {} } }) {
                             首页与文章列表
                         </HeadNavigator.Item>
                         <HeadNavigator.Item
-                            active={window.location.pathname === "/friends"}
-                            onClick={() => window.location.href = "/friends"}
+                            active={window.location.pathname === "/about"}
+                            onClick={() => window.location.href = "/about"}
                         >
-                            友情链接
+                            关于我
                         </HeadNavigator.Item>
                     </HeadNavigator>
                 }

@@ -17,6 +17,7 @@ const posts = indexData.posts || [];
 const staticPages = [
     { name: 'index', template: './src/public/index.html', entry: './src/entries/index.js' },
     { name: 'friends', template: './src/public/friends.html', entry: './src/entries/friends.js' },
+    { name: 'about', template: './src/public/about.html', entry: './src/entries/about.js' },
 ];
 
 // 动态生成 post 页面条目
@@ -192,10 +193,16 @@ module.exports = [
                 },
             ],
             historyApiFallback: {
-                rewrites: posts.map(p => ({
-                    from: new RegExp(`^/post/${p.id}$`),
-                    to: `/post/${p.id}.html`,
-                })),
+                rewrites: [
+                    ...staticPages.map(page => ({
+                        from: new RegExp(`^/${page.name}$`),
+                        to: `/${page.name}.html`,
+                    })),
+                    ...posts.map(p => ({
+                        from: new RegExp(`^/post/${p.id}$`),
+                        to: `/post/${p.id}.html`,
+                    })),
+                ],
             },
         },
         resolve: {
