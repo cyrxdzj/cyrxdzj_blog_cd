@@ -409,6 +409,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                 img:({node, ...props}) => <Image {...props} fill_width/>,
                 table:({node, ...props}) => <AntTable node={node} />,
                 code:CodeBlock,
+                blockquote:({node, ...props}) => <blockquote {...props} style={{borderLeft:`2px solid ${AntdConfigProvider_light.token.colorPrimary}`, padding:'10px', margin:'16px 0', background:`linear-gradient(to right, ${AntdConfigProvider_light.token.colorBgContainer}, transparent)`}}/>,
             }}>{markdownContent}</ReactMarkdown>
         </ConfigProvider>);
     }, [markdownContent]);
