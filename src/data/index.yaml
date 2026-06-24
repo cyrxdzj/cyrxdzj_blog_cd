@@ -37,6 +37,13 @@ posts:
     summary: 线段树合并是将两棵动态开点的权值线段树递归合并，通过处理节点存在与否的情况更新父节点信息，总复杂度为O(n log n)级别。
     length: 1630
     editTimeStr: 2026-06-19 14:07:05 +0800
+  - id: oiClassTigao01468Solution
+    title: 远离班主任 题解
+    tags:
+      - oi
+    summary: 本文介绍了oiClass T1468题的解法和代码实现，通过设置分割点sp并使用倍增、线段树维护dfs序距离最大值，处理树上的两点间路径查询。
+    editTimeStr: 2026-06-24 19:19:39 +0800
+    length: 4292
 tags:
   welcome:
     name: 欢迎
