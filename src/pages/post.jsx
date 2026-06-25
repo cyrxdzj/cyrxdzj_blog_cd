@@ -7,7 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
-import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Table, Tag, Tooltip, Tree, theme as antdTheme } from "antd";
+import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Tag, Tooltip, Tree, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
@@ -164,62 +164,59 @@ function createHeadingRenderers(colorPrimary, notificationAPI) {
 }
 
 /**
- * 将 Markdown 表格节点渲染为 Ant Design Table 组件
+ * 保留 react-markdown 默认渲染的表格内容（内联代码、数学公式等已正确处理），
+ * 递归遍历 th/td 并叠加 Ant Design 主题的内联样式，使外观接近 Ant Design Table。
  */
-function AntTable({ node }) {
-    //console.log(node);
-    // 提取表头行（thead 下的第一个 tr）
-    const thead = node.children?.find(child => child.tagName === 'thead');
-    const tbody = node.children?.find(child => child.tagName === 'tbody');
+function AntTable({ node, children }) {
+    const { token } = antdTheme.useToken();
+    const borderColor = token.colorBorderSecondary;
+    const headerBg = token.colorBgLayout;
+    const cellPadding = '8px 12px';
 
-    if (!thead || !tbody) {
-        // 降级为原生表格
-        return <table>{node.children}</table>;
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'collapse',
+        margin: '16px 0',
+        border: `1px solid ${borderColor}`,
+        fontSize: token.fontSize,
+        color: token.colorText,
+    };
+
+    const applyStyles = (element, isHeader) => {
+        if (!React.isValidElement(element)) return element;
+        const tagName = typeof element.type === 'string' ? element.type : '';
+
+        if (tagName === 'th' || tagName === 'td') {
+            return React.cloneElement(element, {
+                style: {
+                    ...(element.props.style || {}),
+                    padding: cellPadding,
+                    borderBottom: `1px solid ${borderColor}`,
+                    ...(isHeader ? { background: headerBg, fontWeight: 'bold' } : {}),
+                }
+            });
+        }
+
+        const newIsHeader = isHeader || tagName === 'thead';
+        return React.cloneElement(element, {
+            children: React.Children.map(element.props.children, child =>
+                applyStyles(child, newIsHeader)
+            )
+        });
+    };
+
+    if (!children) {
+        // 无 children 时降级为原生表格
+        return <table style={tableStyle}>{node?.children}</table>;
     }
 
-    // 提取列定义
-    const headerRow = thead.children?.find(child => child.tagName === 'tr');
-    const columns = (headerRow?.children?.filter(child => child.tagName === 'th') || []).map((th, colIndex) => ({
-        title: <Text bold>{extractText(th)}</Text>,
-        dataIndex: `col${colIndex}`,
-        key: `col${colIndex}`,
-        align: th.properties?.align || 'left',
-        render: (text) => <Text>{text}</Text>,
-    })) || [];
-
-    // 提取数据行
-    const dataRows = (tbody.children?.filter(child => child.tagName === 'tr') || []);
-    const dataSource = dataRows.map((tr, rowIndex) => {
-        const row = { key: rowIndex };
-        const cells = (tr.children?.filter(child => child.tagName === 'td') || []);
-        cells.forEach((td, colIndex) => {
-            row[`col${colIndex}`] = extractText(td);
-        });
-        return row;
-    });
-
-    //console.log(dataSource);
-
     return (
-        <Table
-            dataSource={dataSource}
-            columns={columns}
-            pagination={false}
-            size="small"
-            bordered
-            style={{ margin: '16px 0' }}
-        />
+        <div style={{ overflowX: 'auto' }}>
+            <table style={tableStyle}>
+                {React.Children.map(children, child => applyStyles(child, false))}
+            </table>
+        </div>
     );
-}
-
-/**
- * 提取节点内的纯文本（用于表格单元格）
- */
-function extractText(node) {
-    //if (typeof node === 'string') return node;
-    if (node?.children) return node.children.map(extractText).join('');
-    else return node.value;
-    return '';
 }
 
 // 全局异步创建高亮器实例（共享）
@@ -407,7 +404,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                 strong:({node, ...props}) => <Text bold {...props}></Text>,
                 li:({node, ...props}) => <li {...props} style={{"color":antdTheme.useToken().token.colorText}}>{props.children}</li>,
                 img:({node, ...props}) => <Image {...props} fill_width/>,
-                table:({node, ...props}) => <AntTable node={node} />,
+                table: AntTable,
                 code:CodeBlock,
                 blockquote:({node, ...props}) => <blockquote {...props} style={{borderLeft:`2px solid ${AntdConfigProvider_light.token.colorPrimary}`, padding:'10px', margin:'16px 0', background:`linear-gradient(to right, ${AntdConfigProvider_light.token.colorBgContainer}, transparent)`}}/>,
             }}>{markdownContent}</ReactMarkdown>
