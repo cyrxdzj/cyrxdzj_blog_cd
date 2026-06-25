@@ -111,8 +111,25 @@ if (!indexData || !Array.isArray(indexData.posts)) {
         }
         post.editTimeStr = editTimeStr;
 
-        // 更新字数
-        post.length = content.length;
+        // 更新字数（排除空格和 Markdown 格式符号）
+        const stripped = content
+            .replace(/```[\s\S]*?```/g, '')           // 移除代码块
+            .replace(/`[^`]*`/g, '')                   // 移除行内代码
+            .replace(/!\[([^\]]*)\]\([^)]*\)/g, '')     // 移除图片
+            .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // 移除链接，保留文本
+            .replace(/<[^>]*>/g, '')                   // 移除 HTML 标签
+            .replace(/^#+\s*/gm, '')                   // 移除标题标记
+            .replace(/^>\s*/gm, '')                    // 移除引用标记
+            .replace(/^[\s]*[-*+]\s+/gm, '')           // 移除无序列表标记
+            .replace(/^[\s]*\d+\.\s+/gm, '')           // 移除有序列表标记
+            .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')   // 移除粗体/斜体 *
+            .replace(/_{1,3}([^_]+)_{1,3}/g, '$1')     // 移除粗体/斜体 _
+            .replace(/~~([^~]+)~~/g, '$1')             // 移除删除线
+            .replace(/^[-*_]{3,}\s*$/gm, '')           // 移除分隔线
+            .replace(/[|]/g, '')                       // 移除表格竖线
+            .replace(/\[\^([^\]]+)\]/g, '')            // 移除脚注
+            .replace(/\s+/g, '');                      // 移除所有空白字符
+        post.length = stripped.length;
     }
 
     // 写回 index.yaml
