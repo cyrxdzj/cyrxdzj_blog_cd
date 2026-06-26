@@ -12,7 +12,7 @@ posts:
       - oi
     length: 2119
     summary: 这篇文章详细讲解了如何用线段树维护带加法和乘法优先级的不带括号表达式，逐步解决修改运算符、修改数值以及空间时间优化，最终通过结构体内函数和缓存幂等方法成功通过黑题。
-    editTimeStr: 2026-06-16 21:52:09 +0800
+    editTimeStr: 2026-06-25 09:05:52 +0800
   - id: TYOI20260820-01-LCAByDoubling
     title: 算法讲解：倍增法求最近公共祖先
     tags:
@@ -20,7 +20,7 @@ posts:
       - oi-lesson
     length: 1107
     summary: 本文介绍了最近公共祖先（LCA）的概念，并从朴素算法出发，详细讲解了倍增优化算法（预处理与查询流程），最后提及了更快的DFS序求LCA方法。
-    editTimeStr: 2026-06-19 14:07:05 +0800
+    editTimeStr: 2026-06-26 18:52:32 +0800
   - id: TYOI20260820-02-DiffOnTree
     title: 算法讲解：树上差分
     tags:
