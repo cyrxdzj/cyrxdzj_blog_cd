@@ -161,16 +161,8 @@ function IndexPage(props) {
                         <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
                             <Card ref={cardRef}>
                                 <Flex justify="center">
-                                    <Text type={"h1"}>I am cyrxdzj.</Text>
+                                    <Text type={"h3"}>Welcome to cyrxdzj's blog.</Text>
                                 </Flex>
-                                <Row gutter={[8, 16]}>
-                                    <Col span={8}><Text>洛谷</Text></Col>
-                                    <Col span={16}><a href="https://luogu.com.cn/user/387836"><Text link>cyrxdzj</Text></a></Col>
-                                </Row>
-                                <Row gutter={[8, 16]}>
-                                    <Col span={8}><Text>oiClass</Text></Col>
-                                    <Col span={16}><a href="https://oiclass.com/user/10161"><Text link>cyrxdzj</Text></a></Col>
-                                </Row>
                             </Card>
                             <NextLine/>
                             <Card>
