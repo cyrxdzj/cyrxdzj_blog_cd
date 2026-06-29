@@ -4,6 +4,7 @@ const yaml = require('js-yaml');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SsrPlugin = require('./plugins/SsrPlugin');
 const SitmapBuilder = require('./plugins/SitmapBuilder');
 const isDev = process.env.BUILD_MODE === 'development';
@@ -126,6 +127,16 @@ module.exports = [
             ],
         },
         plugins: [
+            // 构建时将 src/media/common 复制到 dist/static/media/common（如 favicon）
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        from: 'src/media/common',
+                        to: 'static/media/common',
+                        noErrorOnMissing: true,
+                    },
+                ],
+            }),
             new WebpackBar({
                 name: 'Browser Build',
                 color: '#000088',
@@ -189,6 +200,12 @@ module.exports = [
                 {
                     directory: path.join(__dirname, 'src/media/posts'),
                     publicPath: '/static/media/posts',
+                    watch: true,
+                },
+                // 开发模式下直接访问 src/media/common 中的静态文件（如 favicon）
+                {
+                    directory: path.join(__dirname, 'src/media/common'),
+                    publicPath: '/static/media/common',
                     watch: true,
                 },
             ],
