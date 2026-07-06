@@ -73,3 +73,8 @@ int main()
     //...
 }
 ```
+
+### 习题
+
+1. [Luogu P3258 【JLOI2014】 松鼠的新家](https://www.luogu.com.cn/problem/P3258)
+2. [Luogu P2680 【NOIP 2015 提高组】 运输计划](https://www.luogu.com.cn/problem/P2680)
