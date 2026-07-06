@@ -77,3 +77,66 @@ void combine(int o1,int o2)//将o2指向的线段树合并到o1上
 ```
 
 ### 例题
+
+#### 1. [Luogu P3605 【USACO17JAN】 Promotion Counting P](https://www.luogu.com.cn/problem/P3605)
+
+首先我们可以发现p的具体值不重要，使用离散化即可。这样可以降低后续合并线段树的时间复杂度。
+  
+然后用DFS遍历整棵树，先求出子树的信息（用权值线段树存储本子树下所有奶牛的能力值），再把子树的信息合并到节点中，即可求出本节点的信息。
+
+#### 2. [Luogu P3521 【POI 2011】 ROT-Tree Rotations](https://www.luogu.com.cn/problem/P3521)
+
+用线段树合并来从下到上地求出各节点的信息已不是难点，难点在于如何求出逆序对最小数量。
+
+借用分治法求数组逆序对的思路，我们也可以用分治法，从下到上求出各个子树下的逆序对最小数量。
+
+对于每个节点，我们可以求出“跨越此节点的逆序对最小数量”。而不跨越此节点的逆序对，子树会统计到。把所有节点的这个数字加起来，就是答案。
+
+可以发现，交换某个节点的左右子树不会影响不跨越此节点的逆序对最小数量，计算“跨越此节点的逆序对最小数量”也不需要知道左右子树的具体结构，只需要用权值线段树维护左右子树的所有叶子权值即可求出跨越此节点的逆序对最小数量。
+
+需要注意，本题的空间限制较为严格，线段树的每个节点只够存储3个信息：左节点编号、右节点编号、节点的计数总和，而且都要用int存，共12字节。
+
+每在叶子结点执行change函数（计数增加）最多增加 $\log n$ 个线段树节点。
+
+部分代码：
+
+```cpp
+long long calc_rev(int o1,int o2,int tl,int tr)//用权值线段树计算逆序对数量
+{
+    if(tree[o1].cnt==0||tree[o2].cnt==0)//某个节点总和为0，不必计算后面的了。
+    {
+        return 0;
+    }
+    if(tl==tr)//已到达叶子结点
+    {
+        return 0;
+    }
+    int mid=(tl+tr)>>1;
+    long long res=0;
+    res+=calc_rev(tree[o1].lo,tree[o2].lo,tl,mid);
+    res+=calc_rev(tree[o1].ro,tree[o2].ro,mid+1,tr);
+    res+=((long long)tree[tree[o2].lo].cnt)*((long long)tree[tree[o1].ro].cnt);
+    return res;
+}
+void dfs(int u)//计算子树答案
+{
+    if(p[u])//如果这是叶子
+    {
+        change(rt[u],p[u],1,1,n);//那么就在权值线段树中增加技术
+        return;
+    }
+    //如果这不是叶子
+    dfs(ch[u][0]);//遍历子树
+    dfs(ch[u][1]);
+    long long sum=((long long)tree[rt[ch[u][0]]].cnt)*((long long)tree[rt[ch[u][1]]].cnt);//跨越本节点的数对的数量（逆序对+顺序对）
+    long long rev=calc_rev(rt[ch[u][0]],rt[ch[u][1]],1,n);
+    ans+=min(rev,sum-rev);//不交换与交换取最小值
+    combine(rt[u],rt[ch[u][0]],1,n);//将子树的信息合并上来
+    combine(rt[u],rt[ch[u][1]],1,n);
+}
+```
+
+### 习题
+
+1. [Luogu P3899 【湖南集训】 更为厉害](https://www.luogu.com.cn/problem/P3899)
+2. [Luogu P3293 【SCOI2016】 美味](https://www.luogu.com.cn/problem/P3293)
