@@ -27,16 +27,16 @@ posts:
       - oi
       - oi-lesson
     summary: 本文介绍了树上差分算法，用于高效统计路径经过节点的次数：在路径端点、LCA及其父节点处进行加减操作，最后通过DFS累加子树和得到结果，避免了朴素算法的高时间复杂度。
-    length: 501
-    editTimeStr: 2026-06-19 14:07:05 +0800
+    length: 555
+    editTimeStr: 2026-07-06 15:46:30 +0800
   - id: TYOI20260821-02-SegTreeMerge
     title: 算法讲解：线段树合并
     tags:
       - oi
       - oi-lesson
-    summary: 线段树合并是将两棵动态开点的权值线段树递归合并，通过处理节点存在与否的情况更新父节点信息，总复杂度为O(n log n)级别。
-    length: 714
-    editTimeStr: 2026-06-19 14:07:05 +0800
+    summary: 本文介绍了线段树合并的概念、递归合并算法（处理节点存在与否的三种情况）、关键代码示例，并给出了两个例题（Luogu P3605、P3521）及习题。
+    length: 1324
+    editTimeStr: 2026-07-06 15:46:44 +0800
   - id: oiClassTigao01468Solution
     title: 远离班主任 题解
     tags:
