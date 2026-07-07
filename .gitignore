@@ -35,3 +35,7 @@ src/data/export
 
 # SSR
 .ssr-cache/
+
+# Agent
+.continue/
+.omo/
