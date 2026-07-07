@@ -182,7 +182,7 @@ module.exports = [
                 indexData,
             }),
             new SitmapBuilder({
-                siteUrl: 'https://blog.cyrxdzj.top',
+                siteUrl: 'https://cyrxdzj.top',
             }),]),
         devServer: {
             port: 3000,
