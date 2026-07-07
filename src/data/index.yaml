@@ -52,6 +52,13 @@ posts:
     summary: 本文介绍了oiClass T1468题的解法和代码实现，通过设置分割点sp并使用倍增、线段树维护dfs序距离最大值，处理树上的两点间路径查询。
     editTimeStr: 2026-06-24 19:19:39 +0800
     length: 888
+  - id: AICodingGetStartedByOCDS
+    title: AI Coding入门：以OpenCode+DeepSeek为例开始
+    tags:
+      - ai-coding
+    summary: 本文分享了在Windows上配置AI Coding工具链的步骤，包括安装Node.js、Windows Terminal、Git Bash及oh-my-bash，并详细介绍了开源终端工具OpenCode与DeepSeek模型的配置与使用方法。
+    editTimeStr: 2026-07-07 09:02:07 +0800
+    length: 2291
 tags:
   welcome:
     name: 欢迎
@@ -59,4 +66,7 @@ tags:
     name: OI
   oi-lesson:
     name: OI集训课程
+    starred: true
+  ai-coding:
+    name: AI Coding
     starred: true
