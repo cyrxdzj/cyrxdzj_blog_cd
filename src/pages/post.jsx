@@ -58,17 +58,32 @@ function extractTextFromChildren(children) {
 }
 
 /**
+ * 从 Markdown 原文中移除代码块和内联代码内容，避免其中的 # 被误识别为标题
+ * @param {string} markdown - Markdown 原文
+ * @returns {string} 移除代码块和内联代码后的文本
+ */
+function stripCodeBlocks(markdown) {
+    // 移除围栏代码块（``` 或 ~~~ 包裹的内容）
+    let result = markdown.replace(/^(```|~~~)[\s\S]*?^\1$/gm, '');
+    // 移除内联代码（`...` 包裹的内容）
+    result = result.replace(/`[^`]*`/g, '');
+    return result;
+}
+
+/**
  * 从 Markdown 原文中提取所有标题（用于构建目录树）
  * @param {string} markdown - Markdown 原文
  * @returns {{level:number, text:string, id:string}[]}
  */
 function extractHeadings(markdown) {
     if (!markdown) return [];
+    // 先移除代码块和内联代码，避免其中的 # 被误识别为标题
+    const cleanedMarkdown = stripCodeBlocks(markdown);
     const headingRegex = /^(#{1,6})\s+(.+)$/gm;
     const headings = [];
     const idCounter = {};
     let match;
-    while ((match = headingRegex.exec(markdown)) !== null) {
+    while ((match = headingRegex.exec(cleanedMarkdown)) !== null) {
         const level = match[1].length;
         const text = match[2].trim();
         let id = slugify(text);
