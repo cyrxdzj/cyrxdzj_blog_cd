@@ -6,7 +6,8 @@ AI Coding的很多软件都基于node.js。
 
 node.js是一个JavaScript运行时环境，让你能在电脑上直接运行JavaScript代码，而不需要浏览器。大多数AI Coding工具（包括OpenCode）都是用JavaScript或TypeScript写的，所以必须先装好node.js。
 
-1. 访问 [nodejs.org](https://nodejs.org/)，下载**LTS版本**（长期支持版，更稳定）
+1. 访问[node.js下载页面](https://nodejs.org/zh-cn/download)，下载**LTS版本**（长期支持版，更稳定）
+   > Windows系统下建议通过页面下方的msi方式下载安装（因为docker在Windows下得配置WSL）
 2. 双击安装包，一路点"下一步"即可完成安装
 3. 打开终端，输入 `node -v` 和 `npm -v`，看到版本号就说明安装成功了
 
@@ -148,7 +149,31 @@ opencode --version
 
 > API Key在[DeepSeek开放平台](https://platform.deepseek.com/)申请。
 
-## 基本使用流程
+### AGENTS.md配置OpenCode行为
+
+在`~/.config/opencode/`目录下添加`AGENTS.md`，这是OpenCode全局遵守的规则文件。
+
+以下是我的示例：
+
+```markdown
+### 代码风格
+
+1. 你应该尽可能写出4空格缩进的代码；
+2. 你应该每隔几行写点注释标明一段程序的用途，且函数定义必有注释
+
+### 使用语言
+
+你应该尽可能使用中文。
+
+### agent-todo
+
+如果你的任务是从agent-todo目录下领取的，那么：
+
+- `- [x]`代表已经完成的任务。
+- `- [ ]`代表未完成的任务，完成任务后记得打上勾。
+```
+
+### 基本使用流程
 
 配置完成后，**在项目目录**下打开终端，输入 `opencode` 即可启动交互式编程会话。
 
