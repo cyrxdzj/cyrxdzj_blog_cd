@@ -38,7 +38,7 @@ posts:
     length: 555
     editTimeStr: 2026-07-06 15:46:30 +0800
   - id: TYOI20260820-03-TreeChainDivide
-    title: 算法详解：树链剖分
+    title: 算法讲解：树链剖分
     tags:
       - oi
       - oi-lesson
