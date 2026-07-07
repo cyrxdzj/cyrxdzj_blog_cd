@@ -323,17 +323,10 @@ function CodeBlock({ children, className }) {
         fontFamily: ["Jetbrains Mono","monospace"]
     };
 
-    // 内联代码：使用 <code> 标签 + 样式的行内风格
-    if (inline) {
-        return <code className={className} style={codeStyle}>{children}</code>;
-    }
-
-    // Mermaid 图表：使用专门的渲染组件
-    if (language === 'mermaid') {
-        return <MermaidChart>{children}</MermaidChart>;
-    }
-
+    // 所有 hooks 必须在任何条件早返回之前注册，否则多个相同 CodeBlock 实例跨渲染时
+    // 走不同分支会导致 "Rendered fewer hooks than expected" 错误
     useEffect(() => {
+        if (inline || language === 'mermaid') return;
         let cancelled = false;
         (async () => {
             const highlighter = await highlighterPromise;
@@ -347,23 +340,32 @@ function CodeBlock({ children, className }) {
             if (!cancelled) setHtml(result);
         })();
         return () => { cancelled = true; };
-    }, [children, language, token.dark]);
+    }, [children, language, token.dark, inline]);
 
     // 高亮器就绪后，将内部 pre 的背景设为透明以继承容器背景色
     useEffect(() => {
-        if (html && containerRef.current) {
-            const pre = containerRef.current.querySelector('pre');
-            if (pre) {
-                pre.style.background = 'transparent';
-                pre.style.margin = '0px';
-                //设置字体
-                pre.style.fontFamily = ["Jetbrains Mono","monospace"];
-                containerRef.current.querySelectorAll("code").forEach((ele)=>{
-                    ele.style.fontFamily = ["Jetbrains Mono","monospace"];
-                });
-            }
+        if (inline || language === 'mermaid' || !html || !containerRef.current) return;
+        const pre = containerRef.current.querySelector('pre');
+        if (pre) {
+            pre.style.background = 'transparent';
+            pre.style.margin = '0px';
+            //设置字体
+            pre.style.fontFamily = ["Jetbrains Mono","monospace"];
+            containerRef.current.querySelectorAll("code").forEach((ele)=>{
+                ele.style.fontFamily = ["Jetbrains Mono","monospace"];
+            });
         }
-    }, [html]);
+    }, [html, inline, language]);
+
+    // 内联代码：使用 <code> 标签 + 样式的行内风格
+    if (inline) {
+        return <code className={className} style={codeStyle}>{children}</code>;
+    }
+
+    // Mermaid 图表：使用专门的渲染组件
+    if (language === 'mermaid') {
+        return <MermaidChart>{children}</MermaidChart>;
+    }
 
     if (!html) {
         // fallback: 未加载完成时展示纯文本

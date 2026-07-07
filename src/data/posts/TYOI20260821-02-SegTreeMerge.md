@@ -39,6 +39,147 @@
 
 子节点合并完成后记得将父节点的信息更新为两棵子节点的合并信息。
 
+### 多图演示
+
+例如，有两个值域在 $1\sim 3$ 的权值线段树A、B。其中，A线段树 $1\sim 3$ 的计数分别为2、1、0，B线段树的 $1\sim 3$ 的计数分别为3、0、1。sum为0的节点已被省略。
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:3"])
+    A2(["[1,2]:3"])
+    A21(("(1):2"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    class A1,B1 red;
+```
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:3"])
+    A2(["[1,2]:3"])
+    A21(("(1):2"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    class A2,B2 red;
+```
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:3"])
+    A2(["[1,2]:3"])
+    A21(("(1):2"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    class A21,B21 red;
+```
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:3"])
+    A2(["[1,2]:3"])
+    A21(("(1):5"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    A21-.-T1@{ shape: comment, label: "到达叶子结点，信息相加" }
+    class A21,B21 red;
+```
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:3"])
+    A2(["[1,2]:6"])
+    A2-.-T1@{ shape: comment, label: "回到父节点\n右子节点无操作\n记得update" }
+    A21(("(1):5"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    class A2,B2 red;
+```
+
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    classDef red fill:#EEDDDD,stroke:#880000;
+    A1(["[1,3]:7"])
+    A1-.-T1@{ shape: comment, label: "回到父节点\n右子节点直接连接\n记得update" }
+    A2(["[1,2]:6"])
+    A21(("(1):5"))
+    A22(("(2):1"))
+    A1 -->|L| A2
+    A1 -->|R| B3
+    A2 -->|L| A21
+    A2 -->|R| A22
+    B1(["[1,3]:4"])
+    B2(["[1,2]:3"])
+    B3(("(3):1"))
+    B21(("(1):3"))
+    B1 -->|L| B2
+    B1 -->|R| B3
+    B2 -->|L| B21
+    class A1,B1 red;
+```
+
 ### 关键代码
 
 ```cpp
