@@ -21,6 +21,14 @@ posts:
     summary: 本文介绍了Trie树（前缀树/字典树）的概念、基本操作（插入、查找、前缀查找）、关键代码实现、时空复杂度分析，以及其变种01Trie在最长异或路径等问题中的应用。
     editTimeStr: 2026-07-07 20:39:31 +0800
     length: 1123
+  - id: TYOI20260817-03-SCCByTarjan
+    title: 算法讲解：Tarjan法求强连通分量
+    tags:
+      - oi
+      - oi-lesson
+    summary: 本文介绍了有向图中强连通分量（SCC）的定义，详细讲解了Tarjan算法流程（基于dfn和low数组、栈维护搜索路径），提供了关键代码并附带注释，分析了时空复杂度，最后说明了缩点操作及其应用。
+    editTimeStr: 2026-07-07 22:16:47 +0800
+    length: 1451
   - id: TYOI20260820-01-LCAByDoubling
     title: 算法讲解：倍增法求最近公共祖先
     tags:
