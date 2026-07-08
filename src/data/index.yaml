@@ -88,8 +88,8 @@ posts:
     tags:
       - ai-coding
     summary: 本文介绍了AI Coding的交互技巧：自定架构让AI实现、手动修改后告知AI、用任务列表组织需求、以文件提供上下文、修Bug时提供足够信息，帮助用户更高效地使用AI辅助编程。
-    editTimeStr: 2026-07-08 08:31:54 +0800
-    length: 3711
+    editTimeStr: 2026-07-08 23:38:32 +0800
+    length: 3907
 tags:
   welcome:
     name: 欢迎
