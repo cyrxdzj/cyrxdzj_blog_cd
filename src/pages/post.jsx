@@ -610,7 +610,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                 <Row gutter={[8, 16]}>
                     <Col span={6}>
                         <Spin spinning={isExporting} tip="正在生成PDF">
-                            <Card ref={cardRef}>
+                            <Card simple_mode={simpleMode} ref={cardRef}>
                                 <Flex justify="center">
                                     <Text type={"h3"}>{post?.title}</Text>
                                 </Flex>
@@ -633,7 +633,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                         {treeData.length > 0 && (<>
                             <NextLine/>
                             <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
-                                <Card>
+                                <Card simple_mode={simpleMode}>
                                     <Text type="h3">目录</Text>
                                     <Tree
                                         treeData={treeData}
@@ -646,7 +646,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                         )}
                     </Col>
                     <Col span={18}>
-                            <Card>
+                            <Card simple_mode={simpleMode}>
                                 {renderedMarkdown}
                             </Card>
                             {starTagNavData.length > 0 && (<>
@@ -655,14 +655,14 @@ function PostPage({ post, indexData = { tags: {} } }) {
                                     <React.Fragment key={item.key}>
                                         <Row gutter={16} gutter={[8,16]}>
                                             <Col span={24}>
-                                                <Card>
+                                                <Card simple_mode={simpleMode}>
                                                     <Flex justify='center'><Text type="h3">{item.tagName}</Text></Flex>
                                                 </Card>
                                             </Col>
                                             <Col span={12}>
                                                 {item.prevPost ? (
                                                     <a href={`/post/${item.prevPost.id}`}>
-                                                        <Card>
+                                                        <Card simple_mode={simpleMode}>
                                                             <Flex justify="space-between" align="flex-start">
                                                                 <Flex vertical flex={1}>
                                                                     <Text type={"h3"}>{item.prevPost.title}</Text>
@@ -686,7 +686,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                                                         </Card>
                                                     </a>
                                                 ) : (
-                                                    <Card style={{ opacity: 0.4 }}>
+                                                    <Card simple_mode={simpleMode} style={{ opacity: 0.4 }}>
                                                         <Flex justify="center" align="center" style={{ height: '100%', minHeight: 80 }}>
                                                             <Text type="secondary">已是第一篇</Text>
                                                         </Flex>
@@ -696,7 +696,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                                             <Col span={12}>
                                                 {item.nextPost ? (
                                                     <a href={`/post/${item.nextPost.id}`}>
-                                                        <Card>
+                                                        <Card simple_mode={simpleMode}>
                                                             <Flex justify="space-between" align="flex-start">
                                                                 <Flex vertical flex={1}>
                                                                     <Text type={"h3"}>{item.nextPost.title}</Text>
@@ -720,7 +720,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                                                         </Card>
                                                     </a>
                                                 ) : (
-                                                    <Card style={{ opacity: 0.4 }}>
+                                                    <Card simple_mode={simpleMode} style={{ opacity: 0.4 }}>
                                                         <Flex justify="center" align="center" style={{ height: '100%', minHeight: 80 }}>
                                                             <Text type="secondary">已是最后一篇</Text>
                                                         </Flex>

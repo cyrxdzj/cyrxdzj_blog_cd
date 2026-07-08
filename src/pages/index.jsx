@@ -181,13 +181,13 @@ function IndexPage(props) {
                 <Row gutter={[8, 16]}>
                     <Col span={8}>
                         <Affix offsetTop={affixOffset} target={()=>backgroundRef?.current}>
-                            <Card ref={cardRef}>
+                            <Card simple_mode={simpleMode} ref={cardRef}>
                                 <Flex justify="center">
                                     <Text type={"h3"}>Welcome to cyrxdzj's blog.</Text>
                                 </Flex>
                             </Card>
                             <NextLine/>
-                            <Card>
+                            <Card simple_mode={simpleMode}>
                                 <Row gutter={16}>
                                     <Col span={12}>
                                         <Flex align="center" gap={8}>
@@ -250,7 +250,7 @@ function IndexPage(props) {
                         <Flex vertical gap={8}>
                             {currentPosts.map(post => (
                                 <a href={`/post/${post.id}`} target='_blank'>
-                                    <Card key={post.id}>
+                                    <Card simple_mode={simpleMode} key={post.id}>
                                         <Flex justify="space-between" align="flex-start">
                                             <Flex vertical flex={1}>
                                                 <Text type={"h3"}>{post.title}</Text>

@@ -22,6 +22,10 @@
     transition: backdrop-filter 0.5s ease-in-out, background 0.2s ease-in-out,
                 box-shadow 0.5s ease-in-out;
 }
+.Card.SimpleMode
+{
+    border: #000088,2px,solid;
+}
 .Card.CardTitle
 {
     border-top-left-radius: 0px;

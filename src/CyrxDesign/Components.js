@@ -90,11 +90,11 @@ export const Background = forwardRef((props, ref) => {
 });
 
 export function Card(props) {
-    //console.log(theme.useToken());
+    const { simple_mode = false, ...restProps } = props;
     const token=theme.useToken().token;
-    return (<div style={Object.assign({"background":token.colorBgBase},props.custom_style)} {...props}
-            className={"Card"+(props.titleCard?" CardTitle":"")}>
-                {props.children}
+    return (<div style={Object.assign({"background":token.colorBgBase},restProps.custom_style)} {...restProps}
+            className={"Card"+(restProps.titleCard?" CardTitle":"")+(simple_mode?" SimpleMode":"")}>
+                {restProps.children}
             </div>);
 }
 

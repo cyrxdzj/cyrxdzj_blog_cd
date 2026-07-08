@@ -65,7 +65,7 @@ function AboutPage() {
             >
                 <Row gutter={[8,16]}>
                     <Col xs={24} lg={16}>
-                        <Card>
+                        <Card simple_mode={simpleMode}>
                             <Flex vertical align="center" gap={8}>
                                 <Text type={"h3"}>Hi, I am cyrxdzj.</Text>
                                 <Text>
@@ -75,7 +75,7 @@ function AboutPage() {
                         </Card>
                     </Col>
                     <Col xs={12} lg={8}>
-                        <Card>
+                        <Card simple_mode={simpleMode}>
                             <Flex vertical align="center" gap={8}>
                                 <Text type={"h3"}>联系我</Text>
                                 <Row gutter={[8, 16]} style={{ width: "100%" }}>
@@ -120,7 +120,7 @@ function AboutPage() {
                         </Card>
                     </Col>
                     <Col xs={12} lg={8}>
-                        <Card>
+                        <Card simple_mode={simpleMode}>
                             <Flex vertical align="center" gap={8}>
                                 <Text type={"h3"}>爱好</Text>
                                 <Row gutter={[8, 16]} style={{ width: "100%" }}>
