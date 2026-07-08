@@ -7,7 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import { createHighlighter } from 'shiki';
 import JetBrainsMonoWoff2 from '../media/common/JetBrainsMono-Regular.woff2';
-import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Spin, Tag, Tooltip, Tree, theme as antdTheme } from "antd";
+import { Affix, Button, Col, ConfigProvider, Flex, notification, Row, Space, Spin, Switch, Tag, Tooltip, Tree, theme as antdTheme } from "antd";
 import { AntdConfigProvider_light, formatTimestamp } from "../utils/utils";
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { Background, Text, Card, Paragraph, NextLine, Image, HeadNavigator } from "../CyrxDesign/Components";
@@ -389,6 +389,14 @@ function PostPage({ post, indexData = { tags: {} } }) {
     const [renderedMarkdown,setRenderedMarkdown] =useState(null);
     // 是否正在生成 PDF
     const [isExporting, setIsExporting] = useState(false);
+    // 简单模式开关状态，从localStorage持久化读取
+    const [simpleMode, setSimpleMode] = useState(() => {
+        return localStorage.getItem('post_simple_mode') === 'true';
+    });
+    // 简单模式状态变化时持久化到localStorage
+    useEffect(() => {
+        localStorage.setItem('post_simple_mode', String(simpleMode));
+    }, [simpleMode]);
 
     // 开发模式下动态加载 Markdown 文件
     useEffect(() => {
@@ -563,26 +571,30 @@ function PostPage({ post, indexData = { tags: {} } }) {
         <ConfigProvider theme={AntdConfigProvider_light}>
             {contextHolder}
             <Background
-                background_img={card_002_035_normal}
+                background_img={simpleMode ? undefined : card_002_035_normal}
                 background_img_size={{ "width": 2338, "height": 1440 }}
                 title_logo={MainLogo}
                 title={post?.title}
                 title_end_component={
-                    <HeadNavigator>
-                        <HeadNavigator.Item
-                            active={window.location.pathname === "/"}
-                            onClick={() => window.location.href = "/"}
-                        >
-                            首页与文章列表
-                        </HeadNavigator.Item>
-                        <HeadNavigator.Item
-                            active={window.location.pathname === "/about"}
-                            onClick={() => window.location.href = "/about"}
-                        >
-                            关于我
-                        </HeadNavigator.Item>
-                    </HeadNavigator>
+                    <Space>
+                        <HeadNavigator>
+                            <HeadNavigator.Item
+                                active={window.location.pathname === "/"}
+                                onClick={() => window.location.href = "/"}
+                            >
+                                首页与文章列表
+                            </HeadNavigator.Item>
+                            <HeadNavigator.Item
+                                active={window.location.pathname === "/about"}
+                                onClick={() => window.location.href = "/about"}
+                            >
+                                关于我
+                            </HeadNavigator.Item>
+                        </HeadNavigator>
+                        <Switch checkedChildren="简单模式" unCheckedChildren="简单模式" checked={simpleMode} onChange={setSimpleMode} />
+                    </Space>
                 }
+                background={simpleMode ? AntdConfigProvider_light.token.colorBgBase : undefined}
                 ref={backgroundRef}
             >
                 <Row gutter={[8, 16]}>

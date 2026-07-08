@@ -1,5 +1,5 @@
-import React from 'react';
-import { ConfigProvider, Flex, Row, Col, Timeline } from "antd";
+import React, { useEffect, useState } from 'react';
+import { ConfigProvider, Flex, Row, Col, Space, Switch, Timeline } from "antd";
 import { AntdConfigProvider_light } from "../utils/utils";
 import "../media/common/LXGWWenKai-Regular-Split/result.css"
 import { Background, Text, Card, NextLine, HeadNavigator } from "../CyrxDesign/Components";
@@ -17,29 +17,41 @@ import starRailIcon from "../media/icon/star-rail.webp";
 // 关于我页面组件
 function AboutPage() {
     document.title = "关于我 - cyrxdzj的博客";
+    // 简单模式开关状态，从localStorage持久化读取
+    const [simpleMode, setSimpleMode] = useState(() => {
+        return localStorage.getItem('post_simple_mode') === 'true';
+    });
+    // 简单模式状态变化时持久化到localStorage
+    useEffect(() => {
+        localStorage.setItem('post_simple_mode', String(simpleMode));
+    }, [simpleMode]);
     return (
         <ConfigProvider theme={AntdConfigProvider_light}>
             <Background
-                background_img={card_002_035_normal}
+                background_img={simpleMode ? undefined : card_002_035_normal}
                 background_img_size={{ "width": 2338, "height": 1440 }}
                 title_logo={MainLogo}
                 title="关于我"
                 title_end_component={
-                    <HeadNavigator>
-                        <HeadNavigator.Item
-                            active={window.location.pathname === "/"}
-                            onClick={() => window.location.href = "/"}
-                        >
-                            首页与文章列表
-                        </HeadNavigator.Item>
-                        <HeadNavigator.Item
-                            active={window.location.pathname === "/about"}
-                            onClick={() => window.location.href = "/about"}
-                        >
-                            关于我
-                        </HeadNavigator.Item>
-                    </HeadNavigator>
+                    <Space>
+                        <HeadNavigator>
+                            <HeadNavigator.Item
+                                active={window.location.pathname === "/"}
+                                onClick={() => window.location.href = "/"}
+                            >
+                                首页与文章列表
+                            </HeadNavigator.Item>
+                            <HeadNavigator.Item
+                                active={window.location.pathname === "/about"}
+                                onClick={() => window.location.href = "/about"}
+                            >
+                                关于我
+                            </HeadNavigator.Item>
+                        </HeadNavigator>
+                        <Switch checkedChildren="简单模式" unCheckedChildren="简单模式" checked={simpleMode} onChange={setSimpleMode} />
+                    </Space>
                 }
+                background={simpleMode ? AntdConfigProvider_light.token.colorBgBase : undefined}
             >
                 <Row gutter={[8,16]}>
                     <Col xs={24} lg={16}>
