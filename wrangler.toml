@@ -1,0 +1,4 @@
+name = "cyrxdzj-blog-cd"
+compatibility_date = "2026-07-07"
+assets = { directory = "dist" }
+compatibility_flags = ["nodejs_compat"]
