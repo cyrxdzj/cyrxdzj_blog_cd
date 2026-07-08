@@ -91,6 +91,8 @@ opencode --version
 ### 配置OpenCode
 
 > `~/`代表HOME目录，在Windows下为`C:/Users/<User Name>`。
+>
+> 以.开头的目录可能会被隐藏。可以考虑在文件路径中手写目录名。
 
 在 `~/.config/opencode/opencode.jsonc`中配置：
 
@@ -125,6 +127,8 @@ opencode --version
 ```
 
 > 上述配置只是配置文件的一部分。请勿整个复制粘贴，而是对照配置文件的各部分使用json语法写配置。
+
+> 文件可能不存在。新建一个即可。
 
 > API Key在[DeepSeek开放平台](https://platform.deepseek.com/)申请。
 
