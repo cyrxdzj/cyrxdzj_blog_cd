@@ -25,6 +25,16 @@ function AboutPage() {
     useEffect(() => {
         localStorage.setItem('post_simple_mode', String(simpleMode));
     }, [simpleMode]);
+    // 监听页面可见性变化，重新读取localStorage保持状态同步
+    useEffect(() => {
+        const handlePageVisible = () => {
+            if (document.visibilityState === 'visible') {
+                setSimpleMode(localStorage.getItem('post_simple_mode') === 'true');
+            }
+        };
+        document.addEventListener('visibilitychange', handlePageVisible);
+        return () => document.removeEventListener('visibilitychange', handlePageVisible);
+    }, []);
     return (
         <ConfigProvider theme={AntdConfigProvider_light}>
             <Background
