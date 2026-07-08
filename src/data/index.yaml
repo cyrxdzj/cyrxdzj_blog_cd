@@ -81,8 +81,8 @@ posts:
     tags:
       - ai-coding
     summary: 本文分享了在Windows上配置AI Coding工具链的步骤，包括安装Node.js、Windows Terminal、Git Bash及oh-my-bash，并详细介绍了开源终端工具OpenCode与DeepSeek模型的配置与使用方法。
-    editTimeStr: 2026-07-08 17:57:37 +0800
-    length: 2202
+    editTimeStr: 2026-07-08 21:15:42 +0800
+    length: 2247
   - id: AICodingBasicInteraction
     title: AI Coding入门：基本交互
     tags:
