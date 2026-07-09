@@ -135,6 +135,11 @@ module.exports = [
                         to: 'static/media/common',
                         noErrorOnMissing: true,
                     },
+                    {
+                        from: 'src/media/posts',
+                        to: 'static/media/posts',
+                        noErrorOnMissing: true,
+                    },
                 ],
             }),
             new WebpackBar({

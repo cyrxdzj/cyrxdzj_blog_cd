@@ -1,12 +1,12 @@
 ### 先看一道题
 
-[Luogu P3128 [USACO15DEC] Max Flow P](https://www.luogu.com.cn/problem/P3128)
+[Luogu P3128 【USACO15DEC】 Max Flow P](https://www.luogu.com.cn/problem/P3128)
 
 如果我们开一个数组，统计经过每个节点的路径数量，我们应该怎么统计？
 
 ### 朴素算法
 
-得出路径端点u和v的最近公共祖先f后，从u到f和从v到f，一个一个给中途的点增加统计。
+得出路径端点u和v的最近公共祖先f后，从u到f和从v到f，一个一个地给中途的点增加统计。
 
 时间复杂度 $O(NK)$，其中 $K$ 为路径数量。
 
@@ -67,7 +67,10 @@ int main()
         sum[u]++;
         sum[v]++;
         sum[f]--;
-        sum[fa[f]]--;
+        if (f != 1)
+        {
+            sum[fa[f]]--;
+        }
     }
     dfs(1,0);
     //...
