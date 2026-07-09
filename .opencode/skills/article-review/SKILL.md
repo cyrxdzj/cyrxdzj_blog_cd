@@ -36,6 +36,8 @@ description: 检查博客文章中的错误或令人疑惑之处，通过SubAgen
 
 **重要规则：使用 Task 工具启动 SubAgent 进行并行审校，每个 SubAgent 负责一个分片。**
 
+**注意：SubAgent可以同时启动多个。尽可能同时启动多个。**
+
 启动 SubAgent 时，将分片文本写入 prompt 中，并指示 SubAgent：
 
 1. 使用 `cyrxdzj_io_mcp_web_web_search_bing` 搜索验证不确定的技术信息
