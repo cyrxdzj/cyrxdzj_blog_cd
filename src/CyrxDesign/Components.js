@@ -57,7 +57,7 @@ export const Background = forwardRef((props, ref) => {
             {(props.title!=undefined)?(
                 <>
                 <Affix offsetTop={0} target={()=>ref.current} onChange={(affixed)=>{setTitleAffixed(affixed);console.log(affixed);}}>
-                    <Card titleCard custom_style={titleAffixed?{"backdropFilter":"blur(8px)"}:{}}>
+                    <Card titleCard custom_style={titleAffixed?{"backdropFilter":"blur(30px)"}:{}}>
                         {/*<Flex align="center" justify="space-between">
                             {props.title_logo && <a href="/"><Image src={props.title_logo} height={"50px"}></Image></a>}
                             <Text>{props.title}</Text>
