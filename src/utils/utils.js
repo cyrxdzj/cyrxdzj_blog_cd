@@ -20,7 +20,7 @@ export const useDebugInfo = () => {
     let debug_info=new DebugInfo();
     try
     {
-        if(window.location.host=="localhost:3000")
+        if(window.location.host=="localhost:3008")
         {
             debug_info.debugPage=true;
         }
