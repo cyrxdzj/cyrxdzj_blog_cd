@@ -67,8 +67,8 @@ posts:
       - oi
       - oi-lesson
     summary: 本文介绍了树上差分算法，用于高效统计路径经过节点的次数：在路径端点、LCA及其父节点处进行加减操作，最后通过DFS累加子树和得到结果，避免了朴素算法的高时间复杂度。
-    length: 514
-    editTimeStr: 2026-07-09 23:38:15 +0800
+    length: 512
+    editTimeStr: 2026-07-10 17:46:57 +0800
   - id: TYOI20260820-03-TreeChainDivide
     title: 算法讲解：树链剖分
     tags:
