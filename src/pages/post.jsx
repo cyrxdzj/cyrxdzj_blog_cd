@@ -18,8 +18,8 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 
-// 判断是否处于开发模式（localhost:3000）
-const isDev = typeof window !== 'undefined' && window.location.port === '3000';
+// 判断是否处于开发模式（localhost:3008）
+const isDev = typeof window !== 'undefined' && window.location.port === '3008';
 
 /**
  * 判断两个 URL 是否指向同一页面（忽略查询参数和锚点）
@@ -389,11 +389,11 @@ function PostPage({ post, indexData = { tags: {} } }) {
     const [renderedMarkdown,setRenderedMarkdown] =useState(null);
     // 是否正在生成 PDF
     const [isExporting, setIsExporting] = useState(false);
-    // 简单模式开关状态，从localStorage持久化读取
+    // 简单背景开关状态，从localStorage持久化读取
     const [simpleMode, setSimpleMode] = useState(() => {
         return localStorage.getItem('post_simple_mode') === 'true';
     });
-    // 简单模式状态变化时持久化到localStorage
+    // 简单背景状态变化时持久化到localStorage
     useEffect(() => {
         localStorage.setItem('post_simple_mode', String(simpleMode));
     }, [simpleMode]);
@@ -601,7 +601,7 @@ function PostPage({ post, indexData = { tags: {} } }) {
                                 关于我
                             </HeadNavigator.Item>
                         </HeadNavigator>
-                        <Switch checkedChildren="简单模式" unCheckedChildren="简单模式" checked={simpleMode} onChange={setSimpleMode} />
+                        <Switch checkedChildren="简单背景" unCheckedChildren="简单背景" checked={simpleMode} onChange={setSimpleMode} />
                     </Space>
                 }
                 background={simpleMode ? AntdConfigProvider_light.token.colorBgBase : undefined}

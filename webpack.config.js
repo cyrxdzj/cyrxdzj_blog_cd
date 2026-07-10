@@ -190,7 +190,7 @@ module.exports = [
                 siteUrl: 'https://cyrxdzj.top',
             }),]),
         devServer: {
-            port: 3000,
+            port: 3008,
             hot: true,
             open: false,
             watchFiles: ['src/data/**/*'],

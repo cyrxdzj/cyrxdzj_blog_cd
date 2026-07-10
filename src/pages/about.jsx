@@ -17,11 +17,11 @@ import starRailIcon from "../media/icon/star-rail.webp";
 // 关于我页面组件
 function AboutPage() {
     document.title = "关于我 - cyrxdzj的博客";
-    // 简单模式开关状态，从localStorage持久化读取
+    // 简单背景开关状态，从localStorage持久化读取
     const [simpleMode, setSimpleMode] = useState(() => {
         return localStorage.getItem('post_simple_mode') === 'true';
     });
-    // 简单模式状态变化时持久化到localStorage
+    // 简单背景状态变化时持久化到localStorage
     useEffect(() => {
         localStorage.setItem('post_simple_mode', String(simpleMode));
     }, [simpleMode]);
@@ -58,7 +58,7 @@ function AboutPage() {
                                 关于我
                             </HeadNavigator.Item>
                         </HeadNavigator>
-                        <Switch checkedChildren="简单模式" unCheckedChildren="简单模式" checked={simpleMode} onChange={setSimpleMode} />
+                        <Switch checkedChildren="简单背景" unCheckedChildren="简单背景" checked={simpleMode} onChange={setSimpleMode} />
                     </Space>
                 }
                 background={simpleMode ? AntdConfigProvider_light.token.colorBgBase : undefined}
