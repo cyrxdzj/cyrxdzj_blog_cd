@@ -75,8 +75,8 @@ posts:
       - oi
       - oi-lesson
     summary: 本文介绍了树链剖分（重链剖分）的核心思想与实现，通过两次DFS将树拆分为O(log n)条重链，并用线段树维护链上信息，从而在O(log^2 n)时间内完成路径和子树的查询与修改操作。
-    editTimeStr: 2026-07-10 08:28:42 +0800
-    length: 1687
+    editTimeStr: 2026-07-10 15:42:27 +0800
+    length: 1700
   - id: TYOI20260821-01-VirtualTree
     title: 算法讲解：虚树
     tags:
