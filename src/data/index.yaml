@@ -13,6 +13,14 @@ posts:
     length: 2119
     summary: 这篇文章详细讲解了如何用线段树维护带加法和乘法优先级的不带括号表达式，逐步解决修改运算符、修改数值以及空间时间优化，最终通过结构体内函数和缓存幂等方法成功通过黑题。
     editTimeStr: 2026-06-25 09:05:52 +0800
+  - id: TYOI20260816-02-KMP
+    title: 算法讲解：KMP
+    tags:
+      - oi
+      - oi-lesson
+    summary: KMP算法是一种高效的字符串匹配算法，核心是fail数组记录模式串最长相等前后缀长度，通过避免文本串指针回溯实现O(n+m)复杂度，并给出基于Luogu P3375的代码实现。
+    editTimeStr: 2026-07-10 10:10:58 +0800
+    length: 728
   - id: TYOI20260816-03-Trie
     title: 算法讲解：Trie树
     tags:
@@ -52,39 +60,39 @@ posts:
       - oi-lesson
     length: 1107
     summary: 本文介绍了最近公共祖先（LCA）的概念，并从朴素算法出发，详细讲解了倍增优化算法（预处理与查询流程），最后提及了更快的DFS序求LCA方法。
-    editTimeStr: 2026-06-26 18:52:32 +0800
+    editTimeStr: 2026-07-09 23:38:15 +0800
   - id: TYOI20260820-02-DiffOnTree
     title: 算法讲解：树上差分
     tags:
       - oi
       - oi-lesson
     summary: 本文介绍了树上差分算法，用于高效统计路径经过节点的次数：在路径端点、LCA及其父节点处进行加减操作，最后通过DFS累加子树和得到结果，避免了朴素算法的高时间复杂度。
-    length: 555
-    editTimeStr: 2026-07-06 15:46:30 +0800
+    length: 514
+    editTimeStr: 2026-07-09 23:38:15 +0800
   - id: TYOI20260820-03-TreeChainDivide
     title: 算法讲解：树链剖分
     tags:
       - oi
       - oi-lesson
     summary: 本文介绍了树链剖分（重链剖分）的核心思想与实现，通过两次DFS将树拆分为O(log n)条重链，并用线段树维护链上信息，从而在O(log^2 n)时间内完成路径和子树的查询与修改操作。
-    editTimeStr: 2026-07-07 10:47:50 +0800
-    length: 1510
+    editTimeStr: 2026-07-10 08:28:42 +0800
+    length: 1687
   - id: TYOI20260821-01-VirtualTree
     title: 算法讲解：虚树
     tags:
       - oi
       - oi-lesson
     summary: 本文介绍了虚树的概念、构建方法（基于DFS序排序和单调栈维护链）及其在树形动态规划中的应用，通过仅保留关键点及其LCA，将问题规模从O(n)降至O(k log k)。
-    editTimeStr: 2026-07-07 20:39:31 +0800
-    length: 1398
+    editTimeStr: 2026-07-09 23:38:15 +0800
+    length: 1606
   - id: TYOI20260821-02-SegTreeMerge
     title: 算法讲解：线段树合并
     tags:
       - oi
       - oi-lesson
     summary: 本文介绍了线段树合并的概念、递归合并算法（处理节点存在与否的三种情况）、关键代码示例，并给出了两个例题（Luogu P3605、P3521）及习题。
-    length: 1420
-    editTimeStr: 2026-07-07 23:21:00 +0800
+    length: 1536
+    editTimeStr: 2026-07-09 23:38:15 +0800
   - id: oiClassTigao01468Solution
     title: 远离班主任 题解
     tags:
