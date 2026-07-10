@@ -559,22 +559,65 @@ function PostPage({ post, indexData = { tags: {} } }) {
         });
     }, [post?.tags, post?.id, indexData?.tags, indexData?.posts]);
 
-    // 页面加载时，如果 URL 包含 #xxx，则滚动到对应标题
+    // 滚动时记录滚动位置到 localStorage（防抖 500ms）
+    useEffect(() => {
+        const container = backgroundRef.current;
+        if (!container || !post?.id) return;
+        let timer = null;
+        const STORAGE_KEY = `post_data.${post.id}.readPosition`;
+        const savePosition = () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                try {
+                    localStorage.setItem(STORAGE_KEY, String(container.scrollTop));
+                    console.log(STORAGE_KEY, String(container.scrollTop));
+                } catch (e) {
+                    console.warn('保存阅读位置失败:', e);
+                }
+            }, 500);
+        };
+        container.addEventListener('scroll', savePosition, { passive: true });
+        return () => {
+            container.removeEventListener('scroll', savePosition);
+            if (timer) clearTimeout(timer);
+        };
+    }, [post?.id]);
+
+    // 页面加载时，有 hash 则滚动到标题，否则从 localStorage 恢复上次阅读位置
     useEffect(() => {
         if (!renderedMarkdown) return;
         const hash = window.location.hash;
-        if (!hash) return;
-        const id = decodeURIComponent(hash.replace('#', ''));
-        requestAnimationFrame(() => {
-            const el = document.getElementById(id);
-            const container = backgroundRef.current;
-            if (el && container) {
-                const containerRect = container.getBoundingClientRect();
-                const elRect = el.getBoundingClientRect();
-                const top = elRect.top - containerRect.top + container.scrollTop - affixOffset;
-                container.scrollTo({ top, behavior: 'smooth' });
+        const container = backgroundRef.current;
+        if (!container) return;
+        if (hash) {
+            const id = decodeURIComponent(hash.replace('#', ''));
+            requestAnimationFrame(() => {
+                const el = document.getElementById(id);
+                if (el && container) {
+                    const containerRect = container.getBoundingClientRect();
+                    const elRect = el.getBoundingClientRect();
+                    const top = elRect.top - containerRect.top + container.scrollTop - affixOffset;
+                    container.scrollTo({ top, behavior: 'smooth' });
+                }
+            });
+        } else {
+            // 没有锚点时，尝试从 localStorage 恢复阅读位置
+            const STORAGE_KEY = `post_data.${post?.id}.readPosition`;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const scrollTop = Number(saved);
+                    if (!Number.isNaN(scrollTop) && scrollTop > 0) {
+                        requestAnimationFrame(() => {
+                            container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                            notificationAPI.success({ message: '已跳转至上次阅读的位置', placement: 'topLeft' });
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('读取阅读位置失败:', e);
             }
-        });
+        }
     }, [renderedMarkdown]);
 
     return (
