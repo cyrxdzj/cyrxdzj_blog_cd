@@ -35,16 +35,16 @@ posts:
       - oi
       - oi-lesson
     summary: 扩展域并查集通过将每个元素拆分为多个状态域，将复杂关系转化为等价关系，用于处理如捕食、敌对等非同类关系，以食物链问题为例展示了域的拆分、合并及矛盾判断方法。
-    editTimeStr: 2026-07-09 17:26:42 +0800
-    length: 1254
+    editTimeStr: 2026-07-10 18:40:19 +0800
+    length: 1317
   - id: TYOI20260817-02-UnionSetWithWeight
     title: 算法讲解：带权并查集
     tags:
       - oi
       - oi-lesson
     summary: 带权并查集在普通并查集基础上为每个节点增加权值以维护节点间的量化关系（如距离、差值），通过路径压缩时累加更新权值来计算节点到根节点的距离，并用于解决如银河英雄传说等需相对位置信息的问题。
-    editTimeStr: 2026-07-09 17:26:42 +0800
-    length: 857
+    editTimeStr: 2026-07-10 18:39:18 +0800
+    length: 874
   - id: TYOI20260817-03-SCCByTarjan
     title: 算法讲解：Tarjan法求强连通分量
     tags:
