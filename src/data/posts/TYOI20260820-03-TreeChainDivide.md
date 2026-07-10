@@ -35,6 +35,39 @@
 
 这样，整棵树就被划分成了 $O(\log n)$ 条重链。为什么是 $O(\log n)$？因为每经过一条轻边，子树大小至少减半，所以从任意节点往上跳到根最多经过 $O(\log n)$ 条轻边，也就是最多跨越 $O(\log n)$ 条重链。
 
+#### 图示
+
+如图的红色边就是重边。
+
+```mermaid
+graph TD
+    classDef node fill:#DDDDEE,stroke:#000088;
+    classDef edgeLabel background-color:#DDDDEE;
+    a1((1)) --- a2((2))
+    a1((1)) --- a3((3))
+    a2((2)) --- a4((4))
+    a2((2)) --- a5((5))
+    a3((3)) --- a6((6))
+    a3((3)) --- a7((7))
+    a4((4)) --- a8((8))
+    a4((4)) --- a9((9))
+    a5((5)) --- a10((10))
+    a6((6)) --- a11((11))
+    a6((6)) --- a12((12))
+    a8((8)) --- a13((13))
+    a9((9)) --- a14((14))
+    a11((11)) --- a15((15))
+    linkStyle 0 stroke:#880000,stroke-width:2px
+    linkStyle 2 stroke:#880000,stroke-width:2px
+    linkStyle 7 stroke:#880000,stroke-width:2px
+    linkStyle 12 stroke:#880000,stroke-width:2px
+    linkStyle 4 stroke:#880000,stroke-width:2px
+    linkStyle 9 stroke:#880000,stroke-width:2px
+    linkStyle 13 stroke:#880000,stroke-width:2px
+    linkStyle 8 stroke:#880000,stroke-width:2px
+    linkStyle 11 stroke:#880000,stroke-width:2px
+```
+
 ### 全局变量定义
 
 ```cpp
