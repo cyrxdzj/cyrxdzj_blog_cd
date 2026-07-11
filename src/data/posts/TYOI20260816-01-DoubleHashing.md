@@ -123,7 +123,7 @@ int main()
 
 本题要求判断n个字符串中有多少个不同的字符串。单哈希在极端数据下可能被卡，用双哈希+set可以稳妥解决。
 
-#### 2. [P4503 【CTSC2014】 企鹅QQ](https://www.luogu.com.cn/problem/P4503)
+#### 2. [Luogu P4503 【CTSC2014】 企鹅QQ](https://www.luogu.com.cn/problem/P4503)
 
 给出N个长度均为L的字符串（$N\leq30000$，$L\leq200$），每个字符串互不相同。
 
