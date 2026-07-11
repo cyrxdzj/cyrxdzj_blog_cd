@@ -91,8 +91,8 @@ posts:
       - oi
       - oi-lesson
     summary: 本文介绍了虚树的概念、构建方法（基于DFS序排序和单调栈维护链）及其在树形动态规划中的应用，通过仅保留关键点及其LCA，将问题规模从O(n)降至O(k log k)。
-    editTimeStr: 2026-07-09 23:38:15 +0800
-    length: 1606
+    editTimeStr: 2026-07-11 19:48:58 +0800
+    length: 1448
   - id: TYOI20260821-02-SegTreeMerge
     title: 算法讲解：线段树合并
     tags:
