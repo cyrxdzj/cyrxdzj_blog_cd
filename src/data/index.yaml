@@ -21,6 +21,14 @@ posts:
     summary: KMP算法是一种高效的字符串匹配算法，核心是fail数组记录模式串最长相等前后缀长度，通过避免文本串指针回溯实现O(n+m)复杂度，并给出基于Luogu P3375的代码实现。
     editTimeStr: 2026-07-10 10:10:58 +0800
     length: 728
+  - id: TYOI20260816-01-DoubleHashing
+    title: 算法讲解：双哈希
+    tags:
+      - oi
+      - oi-lesson
+    editTimeStr: 2026-07-11 08:56:25 +0800
+    length: 899
+    summary: 双哈希使用两个不同哈希函数计算字符串哈希值，只有当两者都相等时才认为字符串相等，从而将冲突概率降至极低，并给出了可调整模数数量的核心代码及两道相关例题（字符串去重、求解相似字符串对数）。
   - id: TYOI20260816-03-Trie
     title: 算法讲解：Trie树
     tags:
@@ -51,8 +59,8 @@ posts:
       - oi
       - oi-lesson
     summary: 本文介绍了有向图中强连通分量（SCC）的定义，详细讲解了Tarjan算法流程（基于dfn和low数组、栈维护搜索路径），提供了关键代码并附带注释，分析了时空复杂度，最后说明了缩点操作及其应用。
-    editTimeStr: 2026-07-07 22:16:47 +0800
-    length: 1451
+    editTimeStr: 2026-07-10 23:01:54 +0800
+    length: 1471
   - id: TYOI20260820-01-LCAByDoubling
     title: 算法讲解：倍增法求最近公共祖先
     tags:
