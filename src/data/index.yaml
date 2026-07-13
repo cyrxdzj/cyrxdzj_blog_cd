@@ -117,6 +117,20 @@ posts:
     summary: 本文介绍了有向图中强连通分量（SCC）的定义，详细讲解了Tarjan算法流程（基于dfn和low数组、栈维护搜索路径），提供了关键代码并附带注释，分析了时空复杂度，最后说明了缩点操作及其应用。
     editTimeStr: 2026-07-10 23:01:54 +0800
     length: 1471
+  - id: TYOI20260818-01-DiffConstraints
+    title: 算法讲解：差分约束
+    tags:
+      - oi
+      - oi-lesson
+    summary: 差分约束系统将形如 \(x_u - x_v \leq w\) 的不等式转化为图论最短路问题，通过添加超级源点保证连通性，用SPFA检测负环判断无解，可求变量最值；类似地，\(\geq\) 形式可转化为最长路。
+    editTimeStr: 2026-07-13 21:53:29 +0800
+    length: 1390
+  - id: TYOI20260818-02-ShortestPathInHierarchicalGraph
+    title: 算法讲解：分层图最短路
+    tags:
+      - oi
+      - oi-lesson
+    summary: 分层图最短路通过复制原图成k+1层，层内保留原边，层间用权值为0或操作后权值的边连接，表示使用一次特殊操作，从而解决允许有限次特殊操作（如免费、减半、跳过）的最短路问题，最终取所有层中终点的最短路作为答案。
   - id: TYOI20260820-01-LCAByDoubling
     title: 算法讲解：倍增法求最近公共祖先
     tags:
@@ -165,20 +179,6 @@ posts:
     summary: 期望DP结合动态规划与概率论，利用全期望公式和期望线性性质，通过状态递推求解随机变量数学期望，并介绍了换教室、OSU!、小魔女帕琪等经典例题。
     editTimeStr: 2026-07-13 16:23:42 +0800
     length: 5495
-  - id: TYOI20260818-01-DiffConstraints
-    title: 算法讲解：差分约束
-    tags:
-      - oi
-      - oi-lesson
-    summary: 差分约束系统将形如 \(x_u - x_v \leq w\) 的不等式转化为图论最短路问题，通过添加超级源点保证连通性，用SPFA检测负环判断无解，可求变量最值；类似地，\(\geq\) 形式可转化为最长路。
-    editTimeStr: 2026-07-13 21:53:29 +0800
-    length: 1390
-  - id: TYOI20260818-02-ShortestPathInHierarchicalGraph
-    title: 算法讲解：分层图最短路
-    tags:
-      - oi
-      - oi-lesson
-    summary: 分层图最短路通过复制原图成k+1层，层内保留原边，层间用权值为0或操作后权值的边连接，表示使用一次特殊操作，从而解决允许有限次特殊操作（如免费、减半、跳过）的最短路问题，最终取所有层中终点的最短路作为答案。
     editTimeStr: 2026-07-13 23:47:52 +0800
     length: 3279
   - id: oiClassTigao01468Solution
