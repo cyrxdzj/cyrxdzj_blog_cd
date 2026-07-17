@@ -69,6 +69,14 @@ posts:
     summary: 本文介绍了基环树的概念及其DP的通用方法（找环、子树树形DP、环上环形DP），并通过“骑士”和“旅行”两个例题展示了具体应用。
     editTimeStr: 2026-07-13 16:02:28 +0800
     length: 2665
+  - id: TYOI20260811-02-DPOnExpectation
+    title: 算法讲解：期望DP
+    tags:
+      - oi
+      - oi-lesson
+    summary: 本文介绍了期望DP的概念、核心工具（全期望公式和线性性质）及一般解题方法，并通过投掷硬币、换教室、OSU!和小魔女帕琪等例题展示了如何利用全期望公式建立递推、借助线性性质分解、维护高阶矩期望以及处理概率分支等技巧求解期望值问题。
+    editTimeStr: 2026-07-13 16:23:42 +0800
+    length: 5495
   - id: TYOI20260816-01-DoubleHashing
     title: 算法讲解：双哈希
     tags:
@@ -131,6 +139,8 @@ posts:
       - oi
       - oi-lesson
     summary: 分层图最短路通过复制原图成k+1层，层内保留原边，层间用权值为0或操作后权值的边连接，表示使用一次特殊操作，从而解决允许有限次特殊操作（如免费、减半、跳过）的最短路问题，最终取所有层中终点的最短路作为答案。
+    editTimeStr: 2026-07-13 23:47:52 +0800
+    length: 3279
   - id: TYOI20260820-01-LCAByDoubling
     title: 算法讲解：倍增法求最近公共祖先
     tags:
@@ -171,16 +181,6 @@ posts:
     summary: 本文介绍了线段树合并的概念、递归合并算法（处理节点存在与否的三种情况）、关键代码示例，并给出了两个例题（Luogu P3605、P3521）及习题。
     length: 1536
     editTimeStr: 2026-07-09 23:38:15 +0800
-  - id: TYOI20260811-02-DPOnExpectation
-    title: 算法讲解：期望DP
-    tags:
-      - oi
-      - oi-lesson
-    summary: 期望DP结合动态规划与概率论，利用全期望公式和期望线性性质，通过状态递推求解随机变量数学期望，并介绍了换教室、OSU!、小魔女帕琪等经典例题。
-    editTimeStr: 2026-07-13 16:23:42 +0800
-    length: 5495
-    editTimeStr: 2026-07-13 23:47:52 +0800
-    length: 3279
   - id: oiClassTigao01468Solution
     title: 远离班主任 题解
     tags:
