@@ -91,8 +91,8 @@ posts:
       - oi
       - oi-lesson
     summary: KMP算法是一种高效的字符串匹配算法，核心是fail数组记录模式串最长相等前后缀长度，通过避免文本串指针回溯实现O(n+m)复杂度，并给出基于Luogu P3375的代码实现。
-    editTimeStr: 2026-07-10 10:10:58 +0800
-    length: 728
+    editTimeStr: 2026-07-21 23:12:16 +0800
+    length: 1443
   - id: TYOI20260816-03-Trie
     title: 算法讲解：Trie树
     tags:
