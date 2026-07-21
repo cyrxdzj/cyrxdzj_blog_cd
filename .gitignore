@@ -12,6 +12,7 @@ scripts/credentials.js
 
 # production
 /dist
+*.zip
 
 # misc
 .DS_Store
